@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#080d2c">
+<title>Patel AI Voice Studio</title>
+<style>
+:root{--bg:#080d2c;--panel:#111a45;--panel2:#17245b;--purple:#8b35ff;--blue:#16baff;--text:#f7f8ff;--muted:#aeb8e8;--gold:#ffd84d}
+*{box-sizing:border-box} body{margin:0;background:radial-gradient(circle at 80% 0%,#202a77 0,#080d2c 42%);color:var(--text);font-family:system-ui,-apple-system,"Noto Sans Devanagari",sans-serif}
+.app{max-width:520px;margin:auto;min-height:100vh;padding:18px 16px 34px}
+header{display:flex;align-items:center;gap:12px;margin:8px 0 22px}
+.logo{width:52px;height:52px;border-radius:16px;background:linear-gradient(135deg,#9a37ff,#04baff);display:grid;place-items:center;font-size:26px;box-shadow:0 0 24px #6b38ff66}
+h1{font-size:20px;line-height:1.15;margin:0} .tag{font-size:11px;color:var(--gold);letter-spacing:1px}
+.sub{color:var(--muted);font-size:13px;margin-top:4px}
+.hero{padding:22px 18px;border:1px solid #4652a8;border-radius:24px;background:linear-gradient(135deg,#20266b,#36106b 65%,#063b70);box-shadow:0 12px 35px #0005}
+.hero h2{font-size:23px;margin:0 0 7px}.hero p{font-size:13px;color:#d9ddff;margin:0}
+.wave{height:45px;display:flex;align-items:center;justify-content:center;gap:4px;margin:15px 0 2px}
+.wave i{width:4px;border-radius:9px;background:linear-gradient(#e64cff,#11c5ff);height:var(--h);opacity:.9}
+.tabs{display:flex;gap:8px;margin:18px 0}
+.tab{flex:1;border:1px solid #3b478e;background:#111a45;color:#dce2ff;border-radius:13px;padding:11px 5px;font-weight:650}
+.tab.active{background:linear-gradient(110deg,#8c32ff,#087dff);border-color:transparent;color:white}
+.card{background:#101941;border:1px solid #303d7d;border-radius:20px;padding:17px;margin:14px 0}
+label{display:block;font-size:13px;color:#dce2ff;font-weight:650;margin:13px 0 8px}
+textarea,select,input{width:100%;border:1px solid #46539a;border-radius:13px;background:#080f32;color:white;padding:13px;font:inherit;outline:none}
+textarea{min-height:130px;resize:vertical} select{appearance:auto}
+.row{display:flex;gap:10px}.row>*{flex:1;min-width:0}
+small,.hint{font-size:11px;color:var(--muted)}
+button{cursor:pointer;border:0;color:white;font:inherit;font-weight:700}
+.primary{width:100%;padding:15px;border-radius:15px;background:linear-gradient(100deg,#9c2cff,#126eff);box-shadow:0 7px 20px #632cff55;margin-top:16px}
+.secondary{padding:12px;border-radius:13px;background:#202c66;border:1px solid #5262b2}
+.voicebox{display:flex;align-items:center;gap:10px;background:#18245a;padding:12px;border-radius:14px}
+.avatar{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,#ff9bca,#7046ff);font-size:21px}
+.voicebox strong{font-size:13px}.voicebox small{display:block}
+input[type=range]{padding:0;accent-color:#a54cff}
+.status{padding:11px;border-radius:12px;background:#0b2850;color:#bceaff;font-size:12px;margin-top:12px;display:none}
+.bottom{display:flex;justify-content:space-around;margin-top:22px;padding:13px 5px;border-top:1px solid #29366f;color:#aeb8e8;font-size:11px}
+.bottom span{text-align:center}.bottom b{display:block;font-size:18px;margin-bottom:3px;color:#d8caff}
+.notice{font-size:11px;line-height:1.5;color:#aeb8e8;margin:14px 2px}
+</style>
+</head>
+<body>
+<div class="app">
+<header>
+ <div class="logo">🎙️</div>
+ <div><div class="tag">PATEL • AI STUDIO</div><h1>Patel AI Voice Studio</h1><div class="sub">Speak • Create • Share</div></div>
+</header>
+<section class="hero">
+ <h2>अपनी बात को आवाज़ दें</h2><p>लिखें, भाषा चुनें और अपने मोबाइल में उपलब्ध आवाज़ से सुनें।</p>
+ <div class="wave" aria-hidden="true"><i style="--h:12px"></i><i style="--h:24px"></i><i style="--h:36px"></i><i style="--h:18px"></i><i style="--h:42px"></i><i style="--h:27px"></i><i style="--h:15px"></i><i style="--h:34px"></i><i style="--h:22px"></i><i style="--h:40px"></i><i style="--h:17px"></i><i style="--h:29px"></i><i style="--h:13px"></i></div>
+</section>
+<div class="tabs"><button class="tab active" data-tab="tts">Text to Voice</button><button class="tab" data-tab="clone">My Voice</button></div>
+<section class="card" id="tts">
+ <label for="text">अपना टेक्स्ट लिखें</label>
+ <textarea id="text" maxlength="4000" placeholder="यहाँ हिंदी, मराठी, भोजपुरी या किसी अन्य भाषा में लिखें..."></textarea>
+ <div class="hint" id="count">0 / 4000 अक्षर</div>
+ <div class="row">
+  <div><label for="lang">भाषा चुनें</label><select id="lang">
+   <option value="hi-IN">हिंदी</option><option value="mr-IN">मराठी</option><option value="bn-IN">बंगाली</option><option value="gu-IN">गुजराती</option><option value="ta-IN">तमिल</option><option value="te-IN">तेलुगु</option><option value="kn-IN">कन्नड़</option><option value="ml-IN">मलयालम</option><option value="pa-IN">पंजाबी</option><option value="ur-IN">उर्दू</option><option value="or-IN">ओड़िया</option><option value="as-IN">असमिया</option><option value="en-IN">अंग्रेज़ी (भारत)</option>
+  </select></div>
+  <div><label for="gender">आवाज़ का प्रकार</label><select id="gender"><option value="all">उपलब्ध आवाज़ें</option><option value="female">महिला आवाज़</option><option value="male">पुरुष आवाज़</option></select></div>
+ </div>
+ <label for="voice">मोबाइल की आवाज़</label><select id="voice"><option>आवाज़ें लोड हो रही हैं...</option></select>
+ <div class="row">
+  <div><label for="rate">स्पीड: <b id="rateVal">1.0x</b></label><input id="rate" type="range" min=".6" max="1.5" step=".1" value="1"></div>
+  <div><label for="pitch">पिच: <b id="pitchVal">1.0</b></label><input id="pitch" type="range" min=".7" max="1.4" step=".1" value="1"></div>
+ </div>
+ <div class="row"><button class="secondary" id="preview">▶ सुनें</button><button class="secondary" id="stop">■ रोकें</button></div>
+ <button class="primary" id="speak">▶ आवाज़ बनाकर सुनें</button>
+  <button class="primary" id="download" style="background:linear-gradient(100deg,#087d70,#08a6a0);margin-top:10px">⬇ Download MP3</button>
+ <div class="status" id="status"></div>
+</section>
+<section class="card" id="clone" hidden>
+ <h3 style="margin:0 0 8px">अपनी AI आवाज़</h3>
+ <p class="sub">भविष्य के संस्करण में अपनी आवाज़ का मॉडल बनाने की सुविधा जोड़ी जाएगी। इसके लिए रिकॉर्डिंग, स्पष्ट सहमति और सुरक्षित प्रोसेसिंग जरूरी होगी।</p>
+ <button class="primary" disabled style="opacity:.55">जल्द उपलब्ध होगा</button>
+</section>
+<div class="notice">यह शुरुआती मोबाइल प्रोटोटाइप है। यह आपके Android ब्राउज़र में उपलब्ध Speech Synthesis आवाज़ों का उपयोग करता है। सभी भाषाएँ/आवाज़ें हर फोन में उपलब्ध नहीं होतीं। अभी AI voice cloning, cloud generation और MP3 export शामिल नहीं हैं।</div>
+<div class="bottom"><span><b>⌂</b>होम</span><span><b>♫</b>मेरी ऑडियो</span><span><b>★</b>प्रीमियम</span><span><b>⚙</b>सेटिंग</span></div>
+</div>
+<script>
+const $=id=>document.getElementById(id);
+let voices=[];
+function show(msg){$('status').style.display='block';$('status').textContent=msg}
+function loadVoices(){
+ if(!('speechSynthesis' in window)){show('इस ब्राउज़र में Speech Synthesis उपलब्ध नहीं है। Chrome में खोलकर देखें।');return}
+ voices=speechSynthesis.getVoices();
+ const lang=$('lang').value, gender=$('gender').value;
+ const matched=voices.filter(v=>v.lang.toLowerCase().startsWith(lang.slice(0,2).toLowerCase()));
+ const list=matched.length?matched:voices;
+ $('voice').innerHTML='';
+ list.filter(v=>gender==='all'||(gender==='female'?/female|woman|zira|samantha|lekha|heera/i.test(v.name):/male|man|david|ravi|google हिन्दी/i.test(v.name))).forEach(v=>{
+  const o=document.createElement('option');o.value=voices.indexOf(v);o.textContent=v.name+' — '+v.lang;$('voice').appendChild(o);
+ });
+ if(!$('voice').options.length){voices.forEach((v,i)=>{const o=document.createElement('option');o.value=i;o.textContent=v.name+' — '+v.lang;$('voice').appendChild(o)})}
+ if(!$('voice').options.length){const o=document.createElement('option');o.textContent='इस फोन में कोई आवाज़ नहीं मिली';$('voice').appendChild(o)}
+}
+function speak(){
+ const text=$('text').value.trim();if(!text){show('पहले अपना टेक्स्ट लिखें।');return}
+ if(!('speechSynthesis' in window)){show('आपके ब्राउज़र में आवाज़ सुविधा उपलब्ध नहीं है।');return}
+ speechSynthesis.cancel();
+ const u=new SpeechSynthesisUtterance(text);u.lang=$('lang').value;u.rate=Number($('rate').value);u.pitch=Number($('pitch').value);
+ const v=voices[Number($('voice').value)];if(v)u.voice=v;
+ u.onstart=()=>show('आवाज़ चल रही है…');u.onend=()=>show('प्रीव्यू पूरा हुआ। यह अभी फोन की आवाज़ है, MP3 फ़ाइल नहीं।');u.onerror=()=>show('आवाज़ नहीं चल पाई। दूसरी आवाज़ या भाषा चुनें।');
+ speechSynthesis.speak(u);
+}
+$('text').addEventListener('input',()=> $('count').textContent=$('text').value.length+' / 4000 अक्षर');
+$('lang').addEventListener('change',loadVoices);$('gender').addEventListener('change',loadVoices);
+$('rate').addEventListener('input',()=> $('rateVal').textContent=Number($('rate').value).toFixed(1)+'x');
+$('pitch').addEventListener('input',()=> $('pitchVal').textContent=Number($('pitch').value).toFixed(1));
+$('speak').onclick=speak;
+$('download').onclick=()=>{
+  show('MP3 डाउनलोड अभी उपलब्ध नहीं है। यह संस्करण फोन की Speech Synthesis आवाज़ से केवल सुनाता है, ऑडियो फ़ाइल नहीं बनाता। MP3 डाउनलोड चालू करने के लिए अगले चरण में ऑनलाइन Text-to-Speech सेवा जोड़नी होगी।');
+};$('preview').onclick=speak;$('stop').onclick=()=>{speechSynthesis.cancel();show('आवाज़ रोक दी गई।')};
+document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{
+ document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x===b));
+ $('tts').hidden=b.dataset.tab!=='tts';$('clone').hidden=b.dataset.tab!=='clone';
+});
+if('speechSynthesis' in window){speechSynthesis.onvoiceschanged=loadVoices;loadVoices();setTimeout(loadVoices,700)}
+</script>
+</body></html>
