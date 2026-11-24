@@ -74,8 +74,8 @@
     border-radius: 20px; padding: 16px; margin-bottom: 14px;
   }
   label {
-    display: block; font-size: 12.5px; color: #dce2ff;
-    font-weight: 600; margin: 12px 0 6px;
+    display: block; font-size: 13px; color: #dce2ff;
+    font-weight: 600; margin: 13px 0 6px;
   }
   label:first-child { margin-top: 0; }
 
@@ -104,7 +104,7 @@
   }
   .gold-btn {
     width: 100%; background: linear-gradient(100deg, #b8892d, #e0b85c);
-    color: #101820; margin-top: 10px;
+    color: #101820; margin-top: 12px;
   }
   .secondary {
     background: #1c2861; border: 1px solid #3f509e; flex: 1;
@@ -124,13 +124,13 @@
   <div>
     <div class="tag">MITHILA STREAM STUDIO • BIRPUR</div>
     <h1>Patel AI Voice & Music Studio</h1>
-    <div class="sub">Text to Voice • AI Song Maker • 6+ Languages</div>
+    <div class="sub">Text to Voice • AI Song Maker • 15 Languages</div>
   </div>
 </div>
 
 <div class="hero">
   <h2>अपनी बात और गीत को आवाज़ दें</h2>
-  <p>हिंदी, मैथिली, भोजपुरी, बंगाली, मराठी और अंग्रेज़ी में वॉयस और म्यूज़िक तैयार करें।</p>
+  <p>हिंदी, मैथिली, भोजपुरी, बंगाली, मराठी, गुजराती, पंजाबी, तमिल, तेलुगु, कन्नड़, मलयालम, ओड़िया, असमिया, उर्दू और अंग्रेज़ी में वॉयस व म्यूज़िक बनाएं।</p>
   <div class="wave">
     <i style="--h:14px"></i><i style="--h:28px"></i><i style="--h:20px"></i>
     <i style="--h:34px"></i><i style="--h:16px"></i><i style="--h:30px"></i>
@@ -149,30 +149,26 @@
 <div id="panel-tts" class="panel active">
   <div class="card">
     <label for="ttsText">अपना टेक्स्ट लिखें</label>
-    <textarea id="ttsText" placeholder="यहाँ हिंदी, मैथिली, भोजपुरी या किसी भी भाषा में टेक्स्ट लिखें...">नमस्कार, पटेल एआई वॉयस स्टूडियो में आपका स्वागत है।</textarea>
+    <textarea id="ttsText" placeholder="यहाँ किसी भी भारतीय भाषा में टेक्स्ट लिखें...">नमस्कार, पटेल एआई वॉयस स्टूडियो में आपका स्वागत है।</textarea>
 
-    <div class="row">
-      <div>
-        <label for="ttsLang">भाषा चुनें</label>
-        <select id="ttsLang">
-          <option value="hi-IN">हिंदी (Hindi)</option>
-          <option value="hi-IN">मैथिली (Maithili)</option>
-          <option value="hi-IN">भोजपुरी (Bhojpuri)</option>
-          <option value="bn-IN">बंगाली (Bengali)</option>
-          <option value="mr-IN">मराठी (Marathi)</option>
-          <option value="en-IN">अंग्रेज़ी (English India)</option>
-          <option value="gu-IN">गुजराती</option>
-          <option value="ta-IN">तमिल</option>
-          <option value="te-IN">तेलुगु</option>
-          <option value="pa-IN">पंजाबी</option>
-          <option value="ur-IN">उर्दू</option>
-        </select>
-      </div>
-      <div>
-        <label for="ttsVoice">मोबाइल की आवाज़</label>
-        <select id="ttsVoice"><option>लोड हो रही हैं...</option></select>
-      </div>
-    </div>
+    <label for="ttsLang">भाषा चुनें (15 Languages)</label>
+    <select id="ttsLang">
+      <option value="hi-IN">हिंदी (Hindi)</option>
+      <option value="hi-IN">मैथिली (Maithili)</option>
+      <option value="hi-IN">भोजपुरी (Bhojpuri)</option>
+      <option value="bn-IN">बंगाली (Bengali)</option>
+      <option value="mr-IN">मराठी (Marathi)</option>
+      <option value="gu-IN">गुजराती (Gujarati)</option>
+      <option value="pa-IN">पंजाबी (Punjabi)</option>
+      <option value="ta-IN">तमिल (Tamil)</option>
+      <option value="te-IN">तेलुगु (Telugu)</option>
+      <option value="kn-IN">कन्नड़ (Kannada)</option>
+      <option value="ml-IN">मलयालम (Malayalam)</option>
+      <option value="or-IN">ओड़िया (Odia)</option>
+      <option value="as-IN">असमिया (Assamese)</option>
+      <option value="ur-IN">उर्दू (Urdu)</option>
+      <option value="en-IN">अंग्रेज़ी (English India)</option>
+    </select>
 
     <div class="row">
       <div>
@@ -196,28 +192,32 @@
 <!-- TAB 2: AI SONG & MUSIC STUDIO -->
 <div id="panel-music" class="panel">
   <div class="card">
-    <div class="row">
-      <div>
-        <label for="songLang">गाने की भाषा (6 Languages)</label>
-        <select id="songLang">
-          <option value="hi">हिंदी (Hindi)</option>
-          <option value="mai">मैथिली (Maithili)</option>
-          <option value="bho">भोजपुरी (Bhojpuri)</option>
-          <option value="bn">बंगाली (Bengali)</option>
-          <option value="mr">मराठी (Marathi)</option>
-          <option value="en">अंग्रेज़ी (English)</option>
-        </select>
-      </div>
-      <div>
-        <label for="musicStyle">म्यूज़िक स्टाइल / धुन</label>
-        <select id="musicStyle">
-          <option value="folk">मैथिली / भोजपुरी लोक धुन (Harmonium + Dholak)</option>
-          <option value="bollywood">70s-90s रेट्रो बॉलीवुड मेलोडी</option>
-          <option value="deephouse">इबीज़ा डीप हाउस / पार्टी बीट</option>
-          <option value="lofi">सॉफ्ट लो-फ़ाई / रोमांटिक पियानो</option>
-        </select>
-      </div>
-    </div>
+    <label for="songLang">गाने की भाषा चुनें (14 Indian + English)</label>
+    <select id="songLang">
+      <option value="hi">हिंदी (Hindi)</option>
+      <option value="mai">मैथिली (Maithili)</option>
+      <option value="bho">भोजपुरी (Bhojpuri)</option>
+      <option value="bn">बंगाली (Bengali)</option>
+      <option value="mr">मराठी (Marathi)</option>
+      <option value="gu">गुजराती (Gujarati)</option>
+      <option value="pa">पंजाबी (Punjabi)</option>
+      <option value="ta">तमिल (Tamil)</option>
+      <option value="te">तेलुगु (Telugu)</option>
+      <option value="kn">कन्नड़ (Kannada)</option>
+      <option value="ml">मलयालम (Malayalam)</option>
+      <option value="or">ओड़िया (Odia)</option>
+      <option value="as">असमिया (Assamese)</option>
+      <option value="ur">उर्दू (Urdu)</option>
+      <option value="en">अंग्रेज़ी (English)</option>
+    </select>
+
+    <label for="musicStyle">म्यूज़िक स्टाइल / धुन</label>
+    <select id="musicStyle">
+      <option value="folk">मैथिली / भोजपुरी लोक धुन (Harmonium + Dholak)</option>
+      <option value="bollywood">70s-90s रेट्रो बॉलीवुड मेलोडी</option>
+      <option value="deephouse">इबीज़ा डीप हाउस / पार्टी बीट</option>
+      <option value="lofi">सॉफ्ट लो-फ़ाई / रोमांटिक पियानो</option>
+    </select>
 
     <div class="row">
       <div>
@@ -248,7 +248,7 @@
     <button class="green-btn" onclick="downloadGeneratedMusic()">⬇ Download Music Track (WAV/MP3)</button>
     <button class="secondary" style="width:100%;margin-top:10px" onclick="copySunoPrompt()">📋 Suno / Udio AI Music Prompt कॉपी करें</button>
 
-    <div id="musicStatus" class="status-box">तैयार है — भाषा और म्यूज़िक स्टाइल चुनकर गाना बनाएं!</div>
+    <div id="musicStatus" class="status-box">तैयार है — 15 भाषाओं में से चुनकर अपना गाना बनाएं!</div>
   </div>
 </div>
 
@@ -274,38 +274,24 @@
     document.getElementById('panel-' + name).classList.add('active');
   }
 
-  // Load TTS Voices
-  let voices = [];
-  function loadVoices() {
-    voices = window.speechSynthesis.getVoices();
-    const sel = document.getElementById('ttsVoice');
-    if (!voices.length) return;
-    sel.innerHTML = '';
-    voices.forEach((v, i) => {
-      const opt = document.createElement('option');
-      opt.value = i;
-      opt.textContent = v.name + ' (' + v.lang + ')';
-      if (v.lang.includes('hi') || v.lang.includes('IN')) opt.selected = true;
-      sel.appendChild(opt);
-    });
-  }
-  window.speechSynthesis.onvoiceschanged = loadVoices;
-  setTimeout(loadVoices, 500);
-
-  function speakTTS() { const t = document.getElementById("ttsText").value.trim(); const l = document.getElementById("ttsLang").value; const r = parseFloat(document.getElementById("ttsRate").value); const p = parseFloat(document.getElementById("ttsPitch").value); if (window.AndroidBridge && window.AndroidBridge.speakText) { window.AndroidBridge.speakText(t, l, r, p); return; }
+  function speakTTS() {
     stopAll();
     const text = document.getElementById('ttsText').value.trim();
     if (!text) return;
+    const lang = document.getElementById('ttsLang').value;
+    const rate = parseFloat(document.getElementById('ttsRate').value);
+    const pitch = parseFloat(document.getElementById('ttsPitch').value);
+    if (window.AndroidBridge && window.AndroidBridge.speakText) {
+      window.AndroidBridge.speakText(text, lang, rate, pitch);
+      return;
+    }
     const utter = new SpeechSynthesisUtterance(text);
-    const vIdx = document.getElementById('ttsVoice').value;
-    if (voices[vIdx]) utter.voice = voices[vIdx];
-    utter.lang = document.getElementById('ttsLang').value;
-    utter.rate = parseFloat(document.getElementById('ttsRate').value);
-    utter.pitch = parseFloat(document.getElementById('ttsPitch').value);
-    if (window.AndroidBridge && window.AndroidBridge.speakText) { window.AndroidBridge.speakText(lyrics, mapLang[langCode] || "hi-IN", 0.9, 1.05); } else { window.speechSynthesis.speak(utter); }
+    utter.lang = lang;
+    utter.rate = rate;
+    utter.pitch = pitch;
+    window.speechSynthesis.speak(utter);
   }
 
-  // Sample Lyrics Bank for 6 Languages
   const lyricsDB = {
     hi: {
       romantic: "चाँदनी रातों में तेरा ही ख्याल आता है,\nदिल की हर धड़कन में तेरा ही नाम आता है,\nतेरे बिना अधूरा सा लगता है ये जहाँ,\nतू ही मेरी मंज़िल, तू ही मेरा आसमाँ।",
@@ -337,6 +323,60 @@
       sad: "डोळ्यांतल्या आसवांना आता आवर घालू कसा,\nतुझ्याविना एकटा मी जगू तरी कसा,\nपरतून ये पुन्हा तू या सुन्या वाटेवर,\nतुझीच वाट पाहतोय मी आजही उंबरठ्यावर।",
       folk: "सह्याद्रीच्या कुशीत वसला महाराष्ट्र माझा,\nमातीच्या या गंधात आहे अभिमान ताजा,\nअभंग आणि ओव्यांनी दुमदुमते ही धरती,\nमराठी संस्कृतीची सदा उंच राहो कीर्ती।"
     },
+    gu: {
+      romantic: "ચાંદની રાતમાં તારી જ યાદ આવે છે,\nદિલના દરેક ધબકારે તારું જ નામ આવે છે,\nતારા વિના અધૂરો લાગે છે આ સંસાર,\nતું જ મારી મંઝિલ ને તું જ મારો પ્યાર.",
+      festive: "ઢોલ નગારા વાગે છે આજની આ રાત,\nખુશીઓની આવી છે પ્યારી એવી બારાત,\nગરબે ઘૂમીએ ને ગાઈએ સંગીત,\nપ્રેમ અને ઉમંગથી જીતીએ સૌના ચિત્ત.",
+      sad: "ભીની પાંપણો પર તારી યાદોનો પડછાયો છે,\nએકલતામાં હર પળ તને જ મેં પાયો છે,\nપાછા ફરો ફરીથી આ સૂની વાટોમાં,\nદિલે ફક્ત તને જ પોતાનો બનાવ્યો છે.",
+      folk: "માટીની સુગંધ અને ગામડાની એ સાંજ,\nલીમડાના છાંયડે મળે છે દિલને આરામ,\nનદીઓના નીર અને કોયલનો મીઠો સાદ,\nઆપણી આ ધરતીની અમર રહે યાદ."
+    },
+    pa: {
+      romantic: "ਚੰਨ ਦੀਆਂ ਰਾਤਾਂ ਵਿੱਚ ਤੇਰਾ ਹੀ ਖਿਆਲ ਆਉਂਦਾ ਏ,\nਦਿਲ ਦੀ ਹਰ ਧੜਕਣ ਵਿੱਚ ਤੇਰਾ ਹੀ ਨਾਮ ਆਉਂਦਾ ਏ,\nਤੇਰੇ ਬਿਨਾਂ ਅਧੂਰਾ ਜਿਹਾ ਲੱਗਦਾ ਏ ਇਹ ਜਹਾਨ,\nਤੂੰ ਹੀ ਮੇਰੀ ਮੰਜ਼ਿਲ ਤੇ ਤੂੰ ਹੀ ਮੇਰੀ ਜਾਨ।",
+      festive: "ਢੋਲ ਨਗਾੜੇ ਵੱਜਦੇ ਨੇ ਅੱਜ ਦੀ ਇਸ ਰਾਤ,\nਖੁਸ਼ੀਆਂ ਦੀ ਆਈ ਏ ਸੋਹਣੀ ਜਿਹੀ ਬਾਰਾਤ,\nਭੰਗੜੇ ਪਾਓ ਤੇ ਗਾਓ ਮਿਲ ਕੇ ਸਾਰੇ ਯਾਰ,\nਪਿਆਰ ਤੇ ਉਮੰਗ ਨਾਲ ਮਹਿਕਿਆ ਸੰਸਾਰ।",
+      sad: "ਭਿੱਜੀਆਂ ਅੱਖਾਂ ਵਿੱਚ ਤੇਰੀਆਂ ਯਾਦਾਂ ਦਾ ਸਾਇਆ ਏ,\nਤਨਹਾਈ ਵਿੱਚ ਹਰ ਪਲ ਤੈਨੂੰ ਹੀ ਪਾਇਆ ਏ,\nਮੁੜ ਆ ਫਿਰ ਤੋਂ ਇਹਨਾਂ ਸੁੰਨੀਆਂ ਰਾਹਾਂ ਵਿੱਚ,\nਦਿਲ ਨੇ ਸਿਰਫ਼ ਤੈਨੂੰ ਹੀ ਆਪਣਾ ਬਣਾਇਆ ਏ।",
+      folk: "ਪੰਜ ਦਰਿਆਵਾਂ ਦੀ ਧਰਤੀ ਤੇ ਸੋਹਣਾ ਪੰਜਾਬ,\nਮਿੱਟੀ ਦੀ ਖੁਸ਼ਬੂ ਜਿਵੇਂ ਖਿੜਿਆ ਗੁਲਾਬ,\nਗਿੱਧੇ ਤੇ ਭੰਗੜੇ ਦੀ ਗੂੰਜਦੀ ਏ ਤਾਨ,\nਆਪਣੇ ਵਿਰਸੇ ਤੇ ਸਾਨੂੰ ਬੜਾ ਹੀ ਮਾਣ।"
+    },
+    ta: {
+      romantic: "நிலவொளி இரவில் உன் நினைவுதான் வருகிறது,\nஇதயத்தின் துடிப்பெல்லாம் உன் பெயரைச் சொல்கிறது,\nஉன்னோடு சேர்ந்தால் உலகம் அழகாகுமே,\nநீயே என் வாழ்க்கை, நீயே என் வானமே.",
+      festive: "மேள தாளம் முழங்கிடும் இனிய திருநாள்,\nமகிழ்ச்சியில் ஆடிடும் அன்பான பெருநாள்,\nஆடுவோம் பாடுவோம் ஒன்றாகக் கூடியே,\nஅன்பாலும் பண்பாலும் வாழ்வோம் வாடியே.",
+      sad: "கண்ணீரில் உன் நினைவு நிழலாக ஆடுதே,\nதனிமையில் என் நெஞ்சம் உன்னைத்தானே தேடுதே,\nதிரும்பி வா மீண்டும் என் பாதையிலே,\nஉனக்காகக் காத்திருப்பேன் என் வாழ்க்கையிலே.",
+      folk: "மண்ணின் வாசமும் கிராமத்து மாலையும்,\nதென்றல் வீசும் நதிக்கரைச் சாலையும்,\nகுயிலின் ஓசையும் வயல்வெளி அழகும்,\nநம் தமிழ் மண்ணின் பெருமையைச் சொல்லும்."
+    },
+    te: {
+      romantic: "వెన్నెల రాత్రులలో నీ తలపే వస్తోంది,\nగుండె ప్రతి చప్పుడులో నీ పేరే వినిపిస్తోంది,\nనీవు లేని ఈ లోకం నాకు శూన్యమే,\nనీవే నా గమ్యం, నీవే నా ప్రాణమే.",
+      festive: "డోలు సన్నాయి మోగే ఈ శుభ వేళలో,\nఆనందం నిండింది ప్రతి ఒక్కరి మనసులో,\nఆడుదాం పాడుదాం అందరం కలిసి నేడు,\nప్రేమతో నిండింది ఈ పండుగ సందడి చూడు.",
+      sad: "తడిసిన కన్నులలో నీ జ్ఞాపకాల నీడ ఉంది,\nఒంటరితనంలో ప్రతి క్షణం నిన్నే వెతుకుతోంది,\nతిరిగి రా మళ్ళీ ఈ ఒంటరి దారులలో,\nనా మనసు నిన్నే కోరుకుంటోంది ఎల్లవేళలో.",
+      folk: "మట్టి వాసన మరియు పల్లెటూరి సాయంత్రం,\nచల్లని గాలి వీచే ఆ నదీ తీరం,\nకోయిల పాటలు మరియు పచ్చని పొలాలు,\nమన తెలుగు నేల ఎంతో అందమైనది."
+    },
+    kn: {
+      romantic: "ಬೆಳದಿಂಗಳ ರಾತ್ರಿಯಲ್ಲಿ ನಿನ್ನದೇ ನೆನಪು ಬರುತ್ತದೆ,\nಹೃದಯದ ಪ್ರತಿ ಬಡಿತದಲ್ಲಿ ನಿನ್ನದೇ ಹೆಸರು ಕೇಳಿಸುತ್ತದೆ,\nನೀನಿಲ್ಲದೆ ಈ ಜಗತ್ತು ಅಪೂರ್ಣವಾಗಿದೆ,\nನೀನೇ ನನ್ನ ಗುರಿ, ನೀನೇ ನನ್ನ ಜೀವವಾಗಿದೆ.",
+      festive: "ಡೋಲು ನಗಾರಿ ಮೊಳಗಿದೆ ಈ ಶುಭ ರಾತ್ರಿಯಲ್ಲಿ,\nಸಂತೋಷ ತುಂಬಿದೆ ಎಲ್ಲರ ಮನಸ್ಸಿನಲ್ಲಿ,\nಕುಣಿಯೋಣ ಹಾಡೋಣ ಎಲ್ಲರೂ ಒಟ್ಟಾಗಿ,\nಪ್ರೀತಿಯಿಂದ ಬಾಳೋಣ ನಾವೆಲ್ಲಾ ಹಿತವಾಗಿ.",
+      sad: "ತೇವವಾದ ಕಣ್ಣುಗಳಲ್ಲಿ ನಿನ್ನ ನೆನಪಿನ ನೆರಳಿದೆ,\nಒಂಟಿತನದಲ್ಲಿ ಪ್ರತಿ ಕ್ಷಣ ನಿನ್ನನ್ನೇ ಹುಡುಕಿದೆ,\nಮರಳಿ ಬಾ ಮತ್ತೆ ಈ ಬರಿದಾದ ದಾರಿಯಲ್ಲಿ,\nಮನಸ್ಸು ನಿನ್ನನ್ನೇ ಬಯಸುತ್ತಿದೆ ಬಾಳಿನಲ್ಲಿ.",
+      folk: "ಮಣ್ಣಿನ ಸುವಾಸನೆ ಮತ್ತು ಹಳ್ಳಿಯ ಸಂಜೆ,\nತಂಪಾದ ಗಾಳಿ ಬೀಸುವ ಆ ನದಿಯ ದಂಡೆ,\nಕೋಗಿಲೆಯ ಗಾನ ಮತ್ತು ಹಸಿರು ಹೊಲಗಳು,\nನಮ್ಮ ಕನ್ನಡ ನಾಡಿನ ಹೆಮ್ಮೆಯ ಸೊಬಗು."
+    },
+    ml: {
+      romantic: "നിലാവുള്ള രാത്രിയിൽ നിന്റെ ഓർമ്മകൾ വരുന്നു,\nഹൃദയത്തിന്റെ ഓരോ മിടിപ്പിലും നിന്റെ പേര് കേൾക്കുന്നു,\nനീയില്ലാതെ ഈ ലോകം അപൂർണ്ണമാണ്,\nനീയാണ് എന്റെ ലക്ഷ്യം, നീയാണ് എന്റെ പ്രാണൻ.",
+      festive: "ചെണ്ടമേളം മുഴങ്ങുന്നു ഈ ശുഭ രാത്രിയിൽ,\nസന്തോഷം നിറയുന്നു എല്ലാവരുടെ മനസ്സിലും,\nആടാം പാടാം നമുക്കെല്ലാവർക്കും ഒരുമിച്ച്,\nസ്നേഹത്തോടെ ജീവിക്കാം എന്നെന്നും.",
+      sad: "നനഞ്ഞ മിഴികളിൽ നിന്റെ ഓർമ്മകളുടെ നിഴലുണ്ട്,\nഏകാന്തതയിൽ ഓരോ നിമിഷവും നിന്നെ തിരയുന്നു,\nതിരികെ വരൂ വീണ്ടും ഈ വിജനമായ വഴിയിൽ,\nഎന്റെ മനസ്സ് നിന്നെ മാത്രം സ്നേഹിക്കുന്നു.",
+      folk: "മണ്ണിന്റെ മണവും ഗ്രാമത്തിലെ സന്ധ്യയും,\nതണുത്ത കാറ്റ് വീശുന്ന ആ നദീതീരവും,\nകുയിലിന്റെ പാട്ടും പച്ചപ്പുള്ള വയലുകളും,\nനമ്മുടെ മലയാള നാടിന്റെ അഭിമാനമാണ്."
+    },
+    or: {
+      romantic: "ଜହ୍ନ ରାତିରେ ତୋର ହିଁ କଥା ମନେ ପଡ଼େ,\nହୃଦୟର ପ୍ରତି ସ୍ପନ୍ଦନରେ ତୋ ନାଁ ହିଁ ଶୁଭେ,\nତୋ ବିନା ଅଧୁରା ଲାଗେ ଏଇ ସାରା ଦୁନିଆ,\nତୁ ହିଁ ମୋ ମଞ୍ଜିଲ୍ ଆଉ ତୁ ହିଁ ମୋ ପ୍ରିୟା।",
+      festive: "ଢୋଲ ନିଶାଣ ବାଜୁଛି ଆଜି ଏଇ ରାତିରେ,\nଖୁସିର ଲହରୀ ଖେଳୁଛି ସଭିଙ୍କ ମନରେ,\nନାଚିବା ଗାଇବା ଆସ ମିଶି ସବୁ ସାଥୀ,\nପ୍ରେମ ଓ ଆନନ୍ଦରେ ଜଳୁ ଖୁସିର ବତୀ।",
+      sad: "ଭିଜା ଆଖିରେ ତୋ ସ୍ମୃତିର ଛାଇ ରହିଛି,\nଏକୁଟିଆପଣରେ ପ୍ରତି କ୍ଷଣ ତୋତେ ଖୋଜୁଛି,\nଫେରି ଆସ ପୁଣି ଥରେ ଏଇ ଶୂନ୍ୟ ବାଟରେ,\nମନ ଖାଲି ତୋତେ ହିଁ ଚାହୁଁଛି ଜୀବନରେ।",
+      folk: "ମାଟିର ବାସ୍ନା ଆଉ ଗାଁର ସେଇ ସଞ୍ଜ,\nନଦୀ କୂଳରେ ବହେ ଶୀତଳ ପବନ,\nକୋଇଲିର କୁହୁତାନ ଆଉ ସବୁଜ କ୍ଷେତ,\nଆମ ଓଡ଼ିଶା ମାଟିର ଗୌରବ ମହତ।"
+    },
+    as: {
+      romantic: "জোনাকী ৰাতি তোমাৰেই কথা মনত পৰে,\nহৃদয়ৰ প্ৰতিটো স্পন্দনত তোমাৰেই নাম বাজে,\nতোমাৰ অবিহনে আধৰুৱা লাগে এই জগত,\nতুমিয়েই মোৰ লক্ষ্য, তুমিয়েই মোৰ জীৱন।",
+      festive: "ঢোল পেঁপা বাজিছে আজি এই ৰাতি,\nআনন্দৰ ঢৌ উঠিছে সকলোৰে মনত,\nনাচোঁ আহা গাওঁ আহা মিলি সবেই,\nমৰম আৰু উলাহেৰে ভৰাওঁ এই পৃথিৱী।",
+      sad: "তিতি থকা চকুত তোমাৰ স্মৃতিৰ ছাঁ আছে,\nঅকলশৰীয়া সময়ত প্ৰতিপল তোমাকে বিচাৰে,\nঘূৰি আহা আকৌ এই শুদা বাটলৈ,\nমনে কেৱল তোমাকেই আপোন কৰি লৈছে।",
+      folk: "মাটিৰ সুবাস আৰু গাঁৱৰ সেই সন্ধিয়া,\nনৈৰ পাৰত বয় শীতল মলয়া,\nকুলিৰ মাত আৰু সেউজীয়া পথাৰ,\nআমাৰ অসমীয়া মাটিৰ গৌৰৱ অপাৰ।"
+    },
+    ur: {
+      romantic: "چاندنی راتوں میں تیرا ہی خیال آتا ہے،\nدل کی ہر دھڑکن میں تیرا ہی نام آتا ہے،\nتیرے بنا ادھورا سا لگتا ہے یہ جہاں،\nتو ہی میری منزل، تو ہی میرا آسماں۔",
+      festive: "ڈھول نگارے بجنے لگے ہیں آج کی رات،\nخوشیوں کی آئی ہے پیاری سی بارات،\nناچو اور گاؤ مل کے سارے یار،\nپیار اور امنگ سے مہکا ہے سنسار۔",
+      sad: "بھیگی پلکوں پہ تیری یادوں کا سایہ ہے،\nتنہائی میں ہر پل تجھ کو ہی پایا ہے،\nلوٹ آؤ پھر سے ان سونی راہوں میں،\nدل نے صرف تجھ کو ہی اپنا بنایا ہے۔",
+      folk: "مٹی کی خوشبو اور گاؤں کی وہ شام،\nپیپل کی چھاؤں میں ملتا ہے آرام،\nکوئل کی کوک اور ندیوں کی دھار،\nاپنی ہی مٹی سے ہے سچا پیار۔"
+    },
     en: {
       romantic: "Underneath the silver stars I hear your gentle voice,\nIn a world of endless noise you are my only choice,\nEvery beat inside my heart is calling out your name,\nSince the day you walked right in my life is not the same.",
       festive: "Turn the music louder now and feel the rhythm rise,\nDancing through the midnight glow beneath the neon skies,\nRaise your hands and celebrate the magic of tonight,\nEverything is shining in this golden festival light.",
@@ -353,11 +393,13 @@
   }
   generateAutoLyrics();
 
-  // Web Audio Synthesizer Engine
   let audioCtx = null;
   let musicTimer = null;
 
-  function stopAll() { if (window.AndroidBridge && window.AndroidBridge.stopSpeak) { window.AndroidBridge.stopSpeak(); }
+  function stopAll() {
+    if (window.AndroidBridge && window.AndroidBridge.stopSpeak) {
+      window.AndroidBridge.stopSpeak();
+    }
     window.speechSynthesis.cancel();
     if (musicTimer) {
       clearInterval(musicTimer);
@@ -369,7 +411,7 @@
     }
   }
 
-  function playNote(ctx, freq, time, dur, type = 'triangle', gainVal = 0.14) {
+  function playNote(ctx, freq, time, dur, type = 'triangle', gainVal = 0.16) {
     const osc = ctx.createOscillator();
     const gain = ctx.createGain();
     osc.type = type;
@@ -388,7 +430,7 @@
     osc.type = 'sine';
     osc.frequency.setValueAtTime(isKick ? 130 : 280, time);
     osc.frequency.exponentialRampToValueAtTime(isKick ? 42 : 95, time + 0.14);
-    gain.gain.setValueAtTime(isKick ? 0.35 : 0.18, time);
+    gain.gain.setValueAtTime(isKick ? 0.38 : 0.20, time);
     gain.gain.exponentialRampToValueAtTime(0.001, time + 0.16);
     osc.connect(gain);
     gain.connect(ctx.destination);
@@ -403,12 +445,14 @@
     const bpm = parseInt(document.getElementById('tempo').value);
     const langCode = document.getElementById('songLang').value;
 
-    audioCtx = new (window.AudioContext || window.webkitAudioContext)(); if (audioCtx.state === "suspended") { audioCtx.resume(); }
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if (audioCtx.state === 'suspended') { audioCtx.resume(); }
+
     const scales = {
-      folk: [261.63, 293.66, 329.63, 392.00, 440.00, 523.25], // Bhupali Raga (Folk)
-      bollywood: [261.63, 311.13, 349.23, 392.00, 466.16, 523.25], // 70s-90s Melody
-      deephouse: [130.81, 155.56, 174.61, 196.00, 233.08, 261.63], // Deep House Bass
-      lofi: [220.00, 261.63, 329.63, 392.00, 493.88] // Lo-Fi Chords
+      folk: [261.63, 293.66, 329.63, 392.00, 440.00, 523.25],
+      bollywood: [261.63, 311.13, 349.23, 392.00, 466.16, 523.25],
+      deephouse: [130.81, 155.56, 174.61, 196.00, 233.08, 261.63],
+      lofi: [220.00, 261.63, 329.63, 392.00, 493.88]
     };
     const notes = scales[style];
     const stepMs = Math.round((60 / bpm) * 1000);
@@ -419,24 +463,31 @@
       const now = audioCtx.currentTime;
       const note = notes[step % notes.length];
       const waveType = style === 'folk' ? 'sawtooth' : (style === 'deephouse' ? 'square' : 'sine');
-      playNote(audioCtx, note, now, 0.38, waveType, style === 'folk' ? 0.08 : 0.13);
+      playNote(audioCtx, note, now, 0.38, waveType, style === 'folk' ? 0.10 : 0.15);
       playDrum(audioCtx, now, step % 2 === 0);
       step++;
     }, stepMs);
 
     if (lyrics) {
-      const utter = new SpeechSynthesisUtterance(lyrics);
-      const mapLang = { hi: 'hi-IN', mai: 'hi-IN', bho: 'hi-IN', bn: 'bn-IN', mr: 'mr-IN', en: 'en-IN' };
-      utter.lang = mapLang[langCode] || 'hi-IN';
-      utter.rate = 0.88;
-      utter.pitch = 1.08;
-      utter.onend = () => setTimeout(stopAll, 1500);
-      if (window.AndroidBridge && window.AndroidBridge.speakText) { window.AndroidBridge.speakText(lyrics, mapLang[langCode] || "hi-IN", 0.9, 1.05); } else { window.speechSynthesis.speak(utter); }
+      const mapLang = {
+        hi: 'hi-IN', mai: 'hi-IN', bho: 'hi-IN', bn: 'bn-IN', mr: 'mr-IN',
+        gu: 'gu-IN', pa: 'pa-IN', ta: 'ta-IN', te: 'te-IN', kn: 'kn-IN',
+        ml: 'ml-IN', or: 'or-IN', as: 'as-IN', ur: 'ur-IN', en: 'en-IN'
+      };
+      const targetLang = mapLang[langCode] || 'hi-IN';
+      if (window.AndroidBridge && window.AndroidBridge.speakText) {
+        window.AndroidBridge.speakText(lyrics, targetLang, 0.9, 1.05);
+      } else {
+        const utter = new SpeechSynthesisUtterance(lyrics);
+        utter.lang = targetLang;
+        utter.rate = 0.88;
+        utter.pitch = 1.08;
+        window.speechSynthesis.speak(utter);
+      }
     }
     document.getElementById('musicStatus').innerText = "🎶 म्यूज़िक और गायन चल रहा है...";
   }
 
-  // Generate & Save Real WAV Audio File to Downloads
   function downloadGeneratedMusic() {
     const style = document.getElementById('musicStyle').value;
     const lang = document.getElementById('songLang').value;
@@ -503,7 +554,6 @@
     document.getElementById('musicStatus').innerText = "📋 Suno / Udio AI Prompt कॉपी हो गया है!";
   }
 
-  // Voice Recorder
   let mediaRecorder = null;
   let recordedChunks = [];
   let recordedBase64 = null;
@@ -521,7 +571,8 @@
       mediaRecorder = new MediaRecorder(stream);
       mediaRecorder.ondataavailable = e => { if (e.data.size > 0) recordedChunks.push(e.data); };
       mediaRecorder.onstop = () => {
-        const blob = new Blob(recordedChunks, { type: 'audio/webm' });
+
+
         const reader = new FileReader();
         reader.onloadend = () => {
           recordedBase64 = reader.result;
