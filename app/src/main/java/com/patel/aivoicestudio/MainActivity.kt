@@ -1,74 +1,55 @@
 package com.patel.aivoicestudio
 
-import android.Manifest
 import android.annotation.SuppressLint
-import android.content.ContentValues
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.Typeface
-import android.media.AudioAttributes
-import android.net.Uri
-import android.os.Build
+import android.media.AudioManager
 import android.os.Bundle
-import android.os.Environment
 import android.os.Handler
 import android.os.Looper
-import android.provider.MediaStore
 import android.speech.tts.TextToSpeech
-import android.speech.tts.UtteranceProgressListener
-import android.util.Base64
 import android.view.Gravity
 import android.view.View
+import android.view.ViewGroup
 import android.webkit.JavascriptInterface
-import android.webkit.PermissionRequest
 import android.webkit.WebChromeClient
 import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.FrameLayout
-import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import java.io.File
-import java.io.FileOutputStream
 import java.util.Locale
 
 class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
 
     private lateinit var webView: WebView
     private var tts: TextToSpeech? = null
-    private var ttsReady = false
-    private var lastSavedUri: Uri? = null
+    private var isTtsReady = false
 
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        window.statusBarColor = Color.parseColor("#101820")
-        window.navigationBarColor = Color.parseColor("#101820")
-
-        tts = TextToSpeech(this, this, "com.google.android.tts")
-
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)
-            != PackageManager.PERMISSION_GRANTED
-        ) {
-            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.RECORD_AUDIO), 101)
-        }
+        volumeControlStream = AudioManager.STREAM_MUSIC
 
         val rootLayout = FrameLayout(this).apply {
+            layoutParams = ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT
+            )
+            setBackgroundColor(Color.parseColor("#101820"))
+        }
+
+        webView = WebView(this).apply {
             layoutParams = FrameLayout.LayoutParams(
                 FrameLayout.LayoutParams.MATCH_PARENT,
                 FrameLayout.LayoutParams.MATCH_PARENT
             )
-        }
-
-        webView = WebView(this).apply {
             settings.javaScriptEnabled = true
             settings.domStorageEnabled = true
             settings.allowFileAccess = true
@@ -76,155 +57,77 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
             settings.cacheMode = WebSettings.LOAD_DEFAULT
             settings.userAgentString = settings.userAgentString.replace("; wv", "")
             webViewClient = WebViewClient()
-            webChromeClient = object : WebChromeClient() {
-                override fun onPermissionRequest(request: PermissionRequest) {
-                    request.grant(request.resources)
-                }
-            }
+            webChromeClient = WebChromeClient()
             addJavascriptInterface(StudioBridge(), "AndroidBridge")
-            setDownloadListener { url, _, _, mimeType, _ ->
-                if (url.startsWith("data:")) {
-                    saveBase64Audio(url, mimeType ?: "audio/wav")
-                }
-            }
             loadUrl("file:///android_asset/index.html")
         }
-        rootLayout.addView(webView)
 
-        val splashLayout = FrameLayout(this).apply {
+        val splashLayout = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            gravity = Gravity.CENTER
+            setPadding(48, 48, 48, 48)
             layoutParams = FrameLayout.LayoutParams(
                 FrameLayout.LayoutParams.MATCH_PARENT,
                 FrameLayout.LayoutParams.MATCH_PARENT
             )
-            setBackgroundColor(Color.parseColor("#101820"))
+            val bannerResId = resources.getIdentifier("mithila_full_banner", "drawable", packageName)
+            if (bannerResId != 0) {
+                setBackgroundResource(bannerResId)
+            } else {
+                setBackgroundColor(Color.parseColor("#2B090C"))
+            }
         }
 
-        val bannerResId = resources.getIdentifier("mithila_full_banner", "drawable", packageName)
-        if (bannerResId != 0) {
-            splashLayout.setBackgroundResource(bannerResId)
-        }
-        if (true) {
-            val bannerImg = ImageView(this).apply {
-                setImageResource(bannerResId)
-                scaleType = ImageView.ScaleType.FIT_XY
-                alpha = 0.35f
-                layoutParams = FrameLayout.LayoutParams(
-                    FrameLayout.LayoutParams.MATCH_PARENT,
-                    FrameLayout.LayoutParams.MATCH_PARENT
-                )
-            }
-            splashLayout.addView(bannerImg)
-        if (false) {
-            val fallbackBox = LinearLayout(this).apply {
-                orientation = LinearLayout.VERTICAL
-                gravity = Gravity.CENTER
-                setPadding(48, 48, 48, 48)
-                layoutParams = FrameLayout.LayoutParams(
-                    FrameLayout.LayoutParams.MATCH_PARENT,
-                    FrameLayout.LayoutParams.MATCH_PARENT
-                )
-            }
-            val titleText = TextView(this).apply {
-                text = "🪷 मिथिला स्ट्रीम स्टूडियो 🪷\nMITHILA STREAM STUDIO\nBIRPUR (BIHAR)"
-                textSize = 26f
-                setTypeface(null, Typeface.BOLD)
-                setTextColor(Color.parseColor("#D7B56D"))
-                gravity = Gravity.CENTER
-            }
-            val subText = TextView(this).apply {
-                text = "\n🎙️ Patel AI Voice & Music Studio 🎶\n15 Languages • Suno AI & Gemini Studio"
-                textSize = 16f
-                setTextColor(Color.parseColor("#E0F7FA"))
-                gravity = Gravity.CENTER
-            }
-            fallbackBox.addView(titleText)
-            fallbackBox.addView(subText)
-            splashLayout.addView(fallbackBox)
+        val titleView = TextView(this).apply {
+            text = "🪷 मिथिला स्ट्रीम स्टूडियो 🪷\nMITHILA STREAM STUDIO\nBIRPUR (BIHAR)"
+            textSize = 24f
+            typeface = Typeface.DEFAULT_BOLD
+            setTextColor(Color.parseColor("#F4B41A"))
+            gravity = Gravity.CENTER
         }
 
+        val subTitleView = TextView(this).apply {
+            text = "\n🎙️ Patel AI Voice & Music Studio 🎶\n15 Languages • Suno AI & Gemini Studio\n✨ Loading Studio..."
+            textSize = 15f
+            setTextColor(Color.parseColor("#E0F7FA"))
+            gravity = Gravity.CENTER
+        }
+
+        splashLayout.addView(titleView)
+        splashLayout.addView(subTitleView)
+
+        rootLayout.addView(webView)
         rootLayout.addView(splashLayout)
         setContentView(rootLayout)
 
+        tts = TextToSpeech(this, this)
+
         Handler(Looper.getMainLooper()).postDelayed({
             splashLayout.visibility = View.GONE
-            window.statusBarColor = Color.parseColor("#080D1E")
-            window.navigationBarColor = Color.parseColor("#080D1E")
-        }, 2500)
+        }, 3200L)
     }
 
     override fun onInit(status: Int) {
         if (status == TextToSpeech.SUCCESS) {
-            tts?.setAudioAttributes(
-                AudioAttributes.Builder()
-                    .setUsage(AudioAttributes.USAGE_MEDIA)
-                    .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
-                    .build()
-            )
-            val res = tts?.setLanguage(Locale("hi", "IN"))
-            if (res == TextToSpeech.LANG_MISSING_DATA || res == TextToSpeech.LANG_NOT_SUPPORTED) {
-                tts?.setLanguage(Locale.US)
-            }
-            ttsReady = true
-        if (false) {
-            tts = TextToSpeech(this) { s ->
-                if (s == TextToSpeech.SUCCESS) {
-                    tts?.setLanguage(Locale("hi", "IN"))
-                    ttsReady = true
-                }
-            }
+            isTtsReady = true
+            tts?.language = Locale("hi", "IN")
         }
     }
 
     inner class StudioBridge {
         @JavascriptInterface
-        fun speakText(text: String, langTag: String, rate: Float, pitch: Float) {
+        fun speakText(text: String, langCode: String, rate: Float, pitch: Float) {
             runOnUiThread {
-                if (ttsReady && tts != null) {
-                    val locale = Locale.forLanguageTag(langTag)
-                    val res = tts?.setLanguage(locale)
-                    if (res == TextToSpeech.LANG_MISSING_DATA || res == TextToSpeech.LANG_NOT_SUPPORTED) {
-                        tts?.setLanguage(Locale("hi", "IN"))
-                    }
-                    tts?.setSpeechRate(rate)
-                    tts?.setPitch(pitch)
-                    tts?.speak(text, TextToSpeech.QUEUE_FLUSH, null, "patel_tts_${System.currentTimeMillis()}")
-                if (false) {
-                    Toast.makeText(this@MainActivity, "Voice engine loading, 2 second baad phir dabayein", Toast.LENGTH_SHORT).show()
-                }
-            }
-        }
-
-        @JavascriptInterface
-        fun synthesizeAndSaveVoice(text: String, langTag: String, rate: Float, pitch: Float) {
-            runOnUiThread {
-                if (!ttsReady || tts == null) {
-                    Toast.makeText(this@MainActivity, "Voice engine ready nahi hai", Toast.LENGTH_SHORT).show()
+                if (!isTtsReady || tts == null) {
+                    Toast.makeText(this@MainActivity, "TTS इंजन तैयार हो रहा है...", Toast.LENGTH_SHORT).show()
                     return@runOnUiThread
                 }
-                val locale = Locale.forLanguageTag(langTag)
-                val res = tts?.setLanguage(locale)
-                if (res == TextToSpeech.LANG_MISSING_DATA || res == TextToSpeech.LANG_NOT_SUPPORTED) {
-                    tts?.setLanguage(Locale("hi", "IN"))
-                }
-                tts?.setSpeechRate(rate)
-                tts?.setPitch(pitch)
-
-                val tempFile = File(cacheDir, "Patel_Voice_${System.currentTimeMillis()}.wav")
-                val uttId = "save_utt_${System.currentTimeMillis()}"
-                tts?.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
-                    override fun onStart(utteranceId: String?) {}
-                    override fun onDone(utteranceId: String?) {
-                        if (utteranceId == uttId && tempFile.exists()) {
-                            copyTempFileToDownloads(tempFile, tempFile.name, "audio/wav")
-                        }
-                    }
-                    override fun onError(utteranceId: String?) {
-                        runOnUiThread {
-                            Toast.makeText(this@MainActivity, "Voice file banane mein error aaya", Toast.LENGTH_SHORT).show()
-                        }
-                    }
-                })
-                tts?.synthesizeToFile(text, null, tempFile, uttId)
+                val parts = langCode.split("-")
+                val locale = if (parts.size >= 2) Locale(parts[0], parts[1]) else Locale(langCode)
+                tts?.language = locale
+                tts?.setSpeechRate(rate.coerceIn(0.3f, 2.0f))
+                tts?.setPitch(pitch.coerceIn(0.5f, 2.0f))
+                tts?.speak(text, TextToSpeech.QUEUE_FLUSH, null, "patel_tts_utt")
             }
         }
 
@@ -236,48 +139,38 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         }
 
         @JavascriptInterface
-        fun saveAudio(base64Data: String, fileName: String) {
-            saveBase64Audio(base64Data, "audio/wav", fileName)
-        }
-
-        @JavascriptInterface
-        fun shareText(text: String, targetPackage: String) {
+        fun synthesizeAndSaveVoice(text: String, langCode: String, rate: Float, pitch: Float) {
             runOnUiThread {
+                if (!isTtsReady || tts == null) return@runOnUiThread
                 try {
-                    val sendIntent = Intent(Intent.ACTION_SEND).apply {
-                        type = "text/plain"
-                        putExtra(Intent.EXTRA_TEXT, text)
-                        if (targetPackage.isNotEmpty()) {
-                            setPackage(targetPackage)
-                        }
-                    }
-                    startActivity(Intent.createChooser(sendIntent, "Share via"))
-                } catch (e: Exception) {
-                    val fallback = Intent(Intent.ACTION_SEND).apply {
-                        type = "text/plain"
-                        putExtra(Intent.EXTRA_TEXT, text)
-                    }
-                    startActivity(Intent.createChooser(fallback, "Share via"))
-                }
-            }
-        }
+                    val parts = langCode.split("-")
+                    val locale = if (parts.size >= 2) Locale(parts[0], parts[1]) else Locale(langCode)
+                    tts?.language = locale
+                    tts?.setSpeechRate(rate.coerceIn(0.3f, 2.0f))
+                    tts?.setPitch(pitch.coerceIn(0.5f, 2.0f))
 
-        @JavascriptInterface
-        fun shareAudioAndText(base64Data: String, fileName: String, captionText: String) {
-            saveBase64Audio(base64Data, "audio/wav", fileName)
-            runOnUiThread {
-                try {
-                    val shareIntent = Intent(Intent.ACTION_SEND).apply {
-                        type = "audio/*"
-                        putExtra(Intent.EXTRA_TEXT, captionText)
-                        lastSavedUri?.let {
-                            putExtra(Intent.EXTRA_STREAM, it)
-                            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                        }
+                    val outDir = File(cacheDir, "shared_audio").apply { mkdirs() }
+                    val outFile = File(outDir, "Patel_Voice_${System.currentTimeMillis()}.wav")
+                    val res = tts?.synthesizeToFile(text, null, outFile, "patel_wav_export")
+                    if (res == TextToSpeech.SUCCESS) {
+                        Handler(Looper.getMainLooper()).postDelayed({
+                            if (outFile.exists()) {
+                                val uri = FileProvider.getUriForFile(
+                                    this@MainActivity,
+                                    "${packageName}.fileprovider",
+                                    outFile
+                                )
+                                val shareIntent = Intent(Intent.ACTION_SEND).apply {
+                                    type = "audio/wav"
+                                    putExtra(Intent.EXTRA_STREAM, uri)
+                                    addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                                }
+                                startActivity(Intent.createChooser(shareIntent, "आवाज़ (WAV) शेयर करें"))
+                            }
+                        }, 1200L)
                     }
-                    startActivity(Intent.createChooser(shareIntent, "Share Audio Song"))
                 } catch (e: Exception) {
-                    Toast.makeText(this@MainActivity, "Share error: ${e.message}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@MainActivity, "Export Error: ${e.message}", Toast.LENGTH_SHORT).show()
                 }
             }
         }
@@ -286,92 +179,36 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         fun shareAppApk() {
             runOnUiThread {
                 try {
-                    val sourceApk = File(applicationInfo.sourceDir)
-                    val destApk = File(cacheDir, "Patel_AI_Voice_Studio.apk")
+                    val apkPath = applicationInfo.sourceDir
+                    val sourceApk = File(apkPath)
+                    val outDir = File(cacheDir, "shared_apk").apply { mkdirs() }
+                    val destApk = File(outDir, "Patel_AI_Voice_Music_Studio.apk")
                     sourceApk.copyTo(destApk, overwrite = true)
 
-                    val apkUri = FileProvider.getUriForFile(
+                    val uri = FileProvider.getUriForFile(
                         this@MainActivity,
                         "${packageName}.fileprovider",
                         destApk
                     )
-                    val shareIntent = Intent(Intent.ACTION_SEND).apply {
+                    val intent = Intent(Intent.ACTION_SEND).apply {
                         type = "application/vnd.android.package-archive"
-                        putExtra(Intent.EXTRA_STREAM, apkUri)
-                        putExtra(
-                            Intent.EXTRA_TEXT,
-                            "🎙️ Patel AI Voice & Music Studio (Mithila Stream Studio, Birpur) ऐप इंस्टॉल करें और 15 भाषाओं में वॉयस व गाने बनाएं!"
-                        )
+                        putExtra(Intent.EXTRA_STREAM, uri)
                         addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
                     }
-                    startActivity(Intent.createChooser(shareIntent, "Share Patel AI Voice Studio App"))
+                    startActivity(Intent.createChooser(intent, "ऐप APK शेयर करें"))
                 } catch (e: Exception) {
-                    Toast.makeText(this@MainActivity, "App share error: ${e.message}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@MainActivity, "APK Share Error: ${e.message}", Toast.LENGTH_SHORT).show()
                 }
             }
         }
     }
 
-    private fun copyTempFileToDownloads(sourceFile: File, fileName: String, mimeType: String) {
-        try {
-            val bytes = sourceFile.readBytes()
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                val values = ContentValues().apply {
-                    put(MediaStore.Downloads.DISPLAY_NAME, fileName)
-                    put(MediaStore.Downloads.MIME_TYPE, mimeType)
-                    put(MediaStore.Downloads.RELATIVE_PATH, Environment.DIRECTORY_DOWNLOADS)
-                }
-                val uri = contentResolver.insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, values)
-                lastSavedUri = uri
-                uri?.let {
-                    contentResolver.openOutputStream(it)?.use { out -> out.write(bytes) }
-                }
-            if (false) {
-                val dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-                val dest = File(dir, fileName)
-                FileOutputStream(dest).use { out -> out.write(bytes) }
-                lastSavedUri = Uri.fromFile(dest)
-            }
-            runOnUiThread {
-                Toast.makeText(this, "✅ Voice Audio Saved: $fileName", Toast.LENGTH_LONG).show()
-            }
-        } catch (e: Exception) {
-            runOnUiThread {
-                Toast.makeText(this, "Save error: ${e.message}", Toast.LENGTH_SHORT).show()
-            }
-        }
-    }
-
-    private fun saveBase64Audio(dataUrl: String, mimeType: String, customName: String? = null) {
-        try {
-            val base64Part = if (dataUrl.contains(",")) dataUrl.substringAfter(",") else dataUrl
-            val bytes = Base64.decode(base64Part, Base64.DEFAULT)
-            val fileName = customName ?: "Patel_Song_${System.currentTimeMillis()}.wav"
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                val values = ContentValues().apply {
-                    put(MediaStore.Downloads.DISPLAY_NAME, fileName)
-                    put(MediaStore.Downloads.MIME_TYPE, mimeType)
-                    put(MediaStore.Downloads.RELATIVE_PATH, Environment.DIRECTORY_DOWNLOADS)
-                }
-                val uri = contentResolver.insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, values)
-                lastSavedUri = uri
-                uri?.let {
-                    contentResolver.openOutputStream(it)?.use { out -> out.write(bytes) }
-                }
-            if (false) {
-                val dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-                val file = File(dir, fileName)
-                FileOutputStream(file).use { out -> out.write(bytes) }
-                lastSavedUri = Uri.fromFile(file)
-            }
-            runOnUiThread {
-                Toast.makeText(this, "✅ Saved to Downloads: $fileName", Toast.LENGTH_LONG).show()
-            }
-        } catch (e: Exception) {
-            runOnUiThread {
-                Toast.makeText(this, "Save error: ${e.message}", Toast.LENGTH_SHORT).show()
-            }
+    @Deprecated("Deprecated in Java")
+    override fun onBackPressed() {
+        if (::webView.isInitialized && webView.canGoBack()) {
+            webView.goBack()
+        } else {
+            super.onBackPressed()
         }
     }
 
@@ -379,13 +216,5 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         tts?.stop()
         tts?.shutdown()
         super.onDestroy()
-    }
-
-    override fun onBackPressed() {
-        if (webView.canGoBack()) {
-            webView.goBack()
-        if (false) {
-            super.onBackPressed()
-        }
     }
 }
