@@ -241,7 +241,7 @@
     <textarea id="songLyrics" placeholder="यहाँ गाने के बोल लिखें या ऊपर बटन दबाकर तैयार करें..."></textarea>
 
     <div class="btn-row">
-      <button class="primary" style="margin-top:0;flex:2" onclick="playSongWithMusic()">🎶 म्यूज़िक + गाना चलाएं</button>
+      <button class="primary" style="margin-top:0;flex:2" onclick="playSongWithMusic()">🎹 गाना Create & Play करें</button>
       <button class="secondary" onclick="stopAll()">⏹ रोकें</button>
     </div>
 
@@ -604,7 +604,7 @@
     }
   }
 
-  function exportVoiceNote() {
+  function exportVoiceNote() { const t = document.getElementById("ttsText").value.trim(); const l = document.getElementById("ttsLang").value; const r = parseFloat(document.getElementById("ttsRate").value); const p = parseFloat(document.getElementById("ttsPitch").value); if (t && window.AndroidBridge && window.AndroidBridge.synthesizeAndSaveVoice) { window.AndroidBridge.synthesizeAndSaveVoice(t, l, r, p); return; }
     downloadGeneratedMusic();
   }
 </script>

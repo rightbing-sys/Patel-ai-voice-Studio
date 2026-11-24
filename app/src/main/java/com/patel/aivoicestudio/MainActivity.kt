@@ -7,6 +7,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.Typeface
+import android.media.AudioAttributes
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -15,6 +16,7 @@ import android.os.Handler
 import android.os.Looper
 import android.provider.MediaStore
 import android.speech.tts.TextToSpeech
+import android.speech.tts.UtteranceProgressListener
 import android.util.Base64
 import android.view.Gravity
 import android.view.View
@@ -51,7 +53,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         window.statusBarColor = Color.parseColor("#101820")
         window.navigationBarColor = Color.parseColor("#101820")
 
-        tts = TextToSpeech(this, this)
+        tts = TextToSpeech(this, this, "com.google.android.tts")
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)
             != PackageManager.PERMISSION_GRANTED
@@ -81,7 +83,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
             addJavascriptInterface(StudioBridge(), "AndroidBridge")
             setDownloadListener { url, _, _, mimeType, _ ->
                 if (url.startsWith("data:")) {
-                    saveBase64Audio(url, mimeType ?: "audio/mpeg")
+                    saveBase64Audio(url, mimeType ?: "audio/wav")
                 }
             }
             loadUrl("file:///android_asset/index.html")
@@ -147,11 +149,23 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
 
     override fun onInit(status: Int) {
         if (status == TextToSpeech.SUCCESS) {
+            tts?.setAudioAttributes(
+                AudioAttributes.Builder()
+                    .setUsage(AudioAttributes.USAGE_MEDIA)
+                    .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
+                    .build()
+            )
             val res = tts?.setLanguage(Locale("hi", "IN"))
-            ttsReady = (res != TextToSpeech.LANG_MISSING_DATA && res != TextToSpeech.LANG_NOT_SUPPORTED)
-            if (!ttsReady) {
+            if (res == TextToSpeech.LANG_MISSING_DATA || res == TextToSpeech.LANG_NOT_SUPPORTED) {
                 tts?.setLanguage(Locale.US)
-                ttsReady = true
+            }
+            ttsReady = true
+        } else {
+            tts = TextToSpeech(this) { s ->
+                if (s == TextToSpeech.SUCCESS) {
+                    tts?.setLanguage(Locale("hi", "IN"))
+                    ttsReady = true
+                }
             }
         }
     }
@@ -162,13 +176,50 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
             runOnUiThread {
                 if (ttsReady && tts != null) {
                     val locale = Locale.forLanguageTag(langTag)
-                    tts?.language = locale
+                    val res = tts?.setLanguage(locale)
+                    if (res == TextToSpeech.LANG_MISSING_DATA || res == TextToSpeech.LANG_NOT_SUPPORTED) {
+                        tts?.setLanguage(Locale("hi", "IN"))
+                    }
                     tts?.setSpeechRate(rate)
                     tts?.setPitch(pitch)
-                    tts?.speak(text, TextToSpeech.QUEUE_FLUSH, null, "patel_tts")
+                    tts?.speak(text, TextToSpeech.QUEUE_FLUSH, null, "patel_tts_${System.currentTimeMillis()}")
                 } else {
-                    Toast.makeText(this@MainActivity, "TTS Engine initializing...", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@MainActivity, "Voice engine loading, 2 second baad phir dabayein", Toast.LENGTH_SHORT).show()
                 }
+            }
+        }
+
+        @JavascriptInterface
+        fun synthesizeAndSaveVoice(text: String, langTag: String, rate: Float, pitch: Float) {
+            runOnUiThread {
+                if (!ttsReady || tts == null) {
+                    Toast.makeText(this@MainActivity, "Voice engine ready nahi hai", Toast.LENGTH_SHORT).show()
+                    return@runOnUiThread
+                }
+                val locale = Locale.forLanguageTag(langTag)
+                val res = tts?.setLanguage(locale)
+                if (res == TextToSpeech.LANG_MISSING_DATA || res == TextToSpeech.LANG_NOT_SUPPORTED) {
+                    tts?.setLanguage(Locale("hi", "IN"))
+                }
+                tts?.setSpeechRate(rate)
+                tts?.setPitch(pitch)
+
+                val tempFile = File(cacheDir, "Patel_Voice_${System.currentTimeMillis()}.wav")
+                val uttId = "save_utt_${System.currentTimeMillis()}"
+                tts?.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
+                    override fun onStart(utteranceId: String?) {}
+                    override fun onDone(utteranceId: String?) {
+                        if (utteranceId == uttId && tempFile.exists()) {
+                            copyTempFileToDownloads(tempFile, tempFile.name, "audio/wav")
+                        }
+                    }
+                    override fun onError(utteranceId: String?) {
+                        runOnUiThread {
+                            Toast.makeText(this@MainActivity, "Voice file banane mein error aaya", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                })
+                tts?.synthesizeToFile(text, null, tempFile, uttId)
             }
         }
 
@@ -181,7 +232,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
 
         @JavascriptInterface
         fun saveAudio(base64Data: String, fileName: String) {
-            saveBase64Audio(base64Data, "audio/mpeg", fileName)
+            saveBase64Audio(base64Data, "audio/wav", fileName)
         }
 
         @JavascriptInterface
@@ -246,7 +297,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
                             Intent.EXTRA_TEXT,
                             "🎙️ Patel AI Voice & Music Studio (Mithila Stream Studio, Birpur) ऐप इंस्टॉल करें और 15 भाषाओं में वॉयस व गाने बनाएं!"
                         )
-                        addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                        addFlags(Intent.FLAG_GRANT_URI_PERMISSION)
                     }
                     startActivity(Intent.createChooser(shareIntent, "Share Patel AI Voice Studio App"))
                 } catch (e: Exception) {
@@ -256,11 +307,41 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         }
     }
 
+    private fun copyTempFileToDownloads(sourceFile: File, fileName: String, mimeType: String) {
+        try {
+            val bytes = sourceFile.readBytes()
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                val values = ContentValues().apply {
+                    put(MediaStore.Downloads.DISPLAY_NAME, fileName)
+                    put(MediaStore.Downloads.MIME_TYPE, mimeType)
+                    put(MediaStore.Downloads.RELATIVE_PATH, Environment.DIRECTORY_DOWNLOADS)
+                }
+                val uri = contentResolver.insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, values)
+                lastSavedUri = uri
+                uri?.let {
+                    contentResolver.openOutputStream(it)?.use { out -> out.write(bytes) }
+                }
+            } else {
+                val dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+                val dest = File(dir, fileName)
+                FileOutputStream(dest).use { out -> out.write(bytes) }
+                lastSavedUri = Uri.fromFile(dest)
+            }
+            runOnUiThread {
+                Toast.makeText(this, "✅ Voice Audio Saved: $fileName", Toast.LENGTH_LONG).show()
+            }
+        } catch (e: Exception) {
+            runOnUiThread {
+                Toast.makeText(this, "Save error: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
     private fun saveBase64Audio(dataUrl: String, mimeType: String, customName: String? = null) {
         try {
             val base64Part = if (dataUrl.contains(",")) dataUrl.substringAfter(",") else dataUrl
             val bytes = Base64.decode(base64Part, Base64.DEFAULT)
-            val fileName = customName ?: "Patel_Voice_${System.currentTimeMillis()}.mp3"
+            val fileName = customName ?: "Patel_Song_${System.currentTimeMillis()}.wav"
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 val values = ContentValues().apply {
@@ -280,7 +361,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
                 lastSavedUri = Uri.fromFile(file)
             }
             runOnUiThread {
-                Toast.makeText(this, "Saved to Downloads: $fileName", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "✅ Saved to Downloads: $fileName", Toast.LENGTH_LONG).show()
             }
         } catch (e: Exception) {
             runOnUiThread {
