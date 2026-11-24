@@ -297,7 +297,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
                             Intent.EXTRA_TEXT,
                             "🎙️ Patel AI Voice & Music Studio (Mithila Stream Studio, Birpur) ऐप इंस्टॉल करें और 15 भाषाओं में वॉयस व गाने बनाएं!"
                         )
-                        addFlags(Intent.FLAG_GRANT_URI_PERMISSION)
+                        addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
                     }
                     startActivity(Intent.createChooser(shareIntent, "Share Patel AI Voice Studio App"))
                 } catch (e: Exception) {
