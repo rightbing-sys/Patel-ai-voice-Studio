@@ -682,5 +682,62 @@
     }
   }
 </script>
+<div class="card" style="border:1px solid #D7B56D">
+  <h3 style="margin-top:0;color:var(--gold);font-size:16px">🎙️ Suno AI & Gemini Real Song Studio (100% Free)</h3>
+  <p style="font-size:12px;color:var(--muted);margin-top:0">असली सिंगर की आवाज़ और स्टूडियो ऑर्केस्ट्रा में पूरा MP3 गाना बनाने के लिए:</p>
+  
+  <label style="font-size:12px;color:#E0F7FA">गायक की आवाज़ (Singer Voice):</label>
+  <select id="singerVoice" style="width:100%;padding:10px;margin:6px 0 10px 0;border-radius:8px;background:#0F172A;color:#fff;border:1px solid #334155">
+    <option value="Male Playback Singer (Kishore Kumar / Kumar Sanu 90s Retro Style)">Male Retro 90s (Kishore / Kumar Sanu Style)</option>
+    <option value="Sweet Melodic Female Playback Singer">Female Melodic Playback Singer</option>
+    <option value="Traditional Mithila / Bhojpuri Folk Male & Female Duet">Mithila / Bhojpuri Folk Duet</option>
+    <option value="Modern Deep House / EDM Club Vocalist">Ibiza Deep House / EDM Vocalist</option>
+    <option value="Devotional Bhajan Classical Singer">Devotional / Bhajan Singer</option>
+  </select>
+
+  <button class="gold-btn" style="margin-top:4px;width:100%" onclick="prepareAndCopySunoPrompt()">✨ 1. Suno / Gemini स्क्रिप्ट बनाएं और Copy करें</button>
+  
+  <textarea id="sunoPromptBox" rows="5" placeholder="यहाँ Suno AI और Gemini के लिए तैयार Style + Lyrics स्क्रिप्ट दिखेगी..." style="width:100%;margin-top:8px;padding:8px;border-radius:8px;background:#090E1A;color:#A7F3D0;border:1px solid #1E293B;font-size:12px"></textarea>
+
+  <div class="btn-row" style="margin-top:8px">
+    <button class="primary" style="flex:1;margin-top:0" onclick="openRealStudio('https://suno.com/create')">🎵 2. Suno AI खोलें (Free)</button>
+    <button class="green-btn" style="flex:1;margin-top:0" onclick="openRealStudio('https://gemini.google.com')">💎 3. Gemini Music खोलें</button>
+  </div>
+</div>
+
+<script>
+  function prepareAndCopySunoPrompt() {
+    const lang = document.getElementById('songLang') ? document.getElementById('songLang').value : 'Hindi';
+    const style = document.getElementById('musicStyle') ? document.getElementById('musicStyle').value : '90s Bollywood Romantic';
+    const bpm = document.getElementById('tempo') ? document.getElementById('tempo').value : '105';
+    const voice = document.getElementById('singerVoice').value;
+    const rawLyrics = document.getElementById('songLyrics') ? document.getElementById('songLyrics').value.trim() : '';
+
+    const stylePrompt = `Style of Music: ${style}, ${lang} song, ${voice}, ${bpm} BPM, rich Indian percussion (tabla/dholak), melodic strings, studio master quality, emotional expressive vocals`;
+    const formattedLyrics = rawLyrics
+      ? `[Intro - Melodic Instrumental]\n\n[Verse 1]\n${rawLyrics}\n\n[Chorus - Full Orchestra]\n${rawLyrics}\n\n[Outro - Fade Out]`
+      : `[Intro]\n\n[Verse 1]\nमिथिला के आँगन में गूँजे मधुर संगीत,\nपटेेल स्टूडियो से निकला दिल का ये गीत।\n\n[Chorus]\nझूम उठे हर मन, बजे ढोल और शहनाई,\nसुरों की इस महफ़िल में खुशियाँ हैं छाई।`;
+
+    const fullScript = `${stylePrompt}\n\n--- LYRICS ---\n${formattedLyrics}`;
+    const box = document.getElementById('sunoPromptBox');
+    box.value = fullScript;
+
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(fullScript).catch(() => {});
+    }
+    box.select();
+    try { document.execCommand('copy'); } catch (e) {}
+
+    alert("✅ Suno AI / Gemini के लिए स्टाइल और बोल कॉपी हो गए हैं! अब नीचे 'Suno AI खोलें' या 'Gemini Music खोलें' दबाकर Paste करें।");
+  }
+
+  function openRealStudio(url) {
+    const box = document.getElementById('sunoPromptBox');
+    if (!box.value.trim()) {
+      prepareAndCopySunoPrompt();
+    }
+    window.location.href = url;
+  }
+</script>
 </body>
 </html>

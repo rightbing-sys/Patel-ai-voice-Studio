@@ -74,6 +74,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
             settings.allowFileAccess = true
             settings.mediaPlaybackRequiresUserGesture = false
             settings.cacheMode = WebSettings.LOAD_DEFAULT
+            settings.userAgentString = settings.userAgentString.replace("; wv", "")
             webViewClient = WebViewClient()
             webChromeClient = object : WebChromeClient() {
                 override fun onPermissionRequest(request: PermissionRequest) {
