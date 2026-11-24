@@ -608,5 +608,79 @@
     downloadGeneratedMusic();
   }
 </script>
+<div class="card">
+  <h3 style="margin-top:0;color:var(--gold);font-size:15px">📤 Share App, Songs & Lyrics</h3>
+  <p style="font-size:12px;color:var(--muted);margin-top:0">पूरा ऐप (APK), गाना या बोल सीधे दोस्तों को भेजें:</p>
+  <button class="gold-btn" style="margin-top:0" onclick="shareFullApp()">📲 ऐप शेयर करें (Share App APK)</button>
+  <div class="btn-row">
+    <button class="green-btn" style="margin-top:0;flex:1" onclick="shareCurrentLyrics()">📤 बोल शेयर करें</button>
+    <button class="primary" style="margin-top:0;flex:1" onclick="shareMusicTrack()">🎵 Audio गाना शेयर करें</button>
+  </div>
+  <div class="btn-row">
+    <button class="secondary" onclick="shareToApp('com.whatsapp')">WhatsApp</button>
+    <button class="secondary" onclick="shareToApp('org.telegram.messenger')">Telegram</button>
+    <button class="secondary" onclick="shareToApp('com.arattai.android')">Arattai</button>
+  </div>
+</div>
+<script>
+  function shareFullApp() {
+    if (window.AndroidBridge && window.AndroidBridge.shareAppApk) {
+      window.AndroidBridge.shareAppApk();
+    }
+  }
+  function shareCurrentLyrics() {
+    const lyrics = document.getElementById('songLyrics').value.trim() || document.getElementById('ttsText').value.trim();
+    const msg = "🎶 Patel AI Voice & Music Studio (Mithila Stream Studio, Birpur):\n\n" + lyrics;
+    if (window.AndroidBridge && window.AndroidBridge.shareText) {
+      window.AndroidBridge.shareText(msg, "");
+    }
+  }
+  function shareToApp(pkg) {
+    const lyrics = document.getElementById('songLyrics').value.trim() || "Patel AI Voice & Music Studio - Mithila Stream Studio (Birpur)";
+    const msg = "🎙️ Patel AI Voice & Music Studio:\n\n" + lyrics;
+    if (window.AndroidBridge && window.AndroidBridge.shareText) {
+      window.AndroidBridge.shareText(msg, pkg);
+    }
+  }
+  function shareMusicTrack() {
+    const style = document.getElementById('musicStyle').value;
+    const lang = document.getElementById('songLang').value;
+    const bpm = parseInt(document.getElementById('tempo').value);
+    const sampleRate = 22050;
+    const durationSec = 12;
+    const totalSamples = sampleRate * durationSec;
+    const buffer = new ArrayBuffer(44 + totalSamples * 2);
+    const view = new DataView(buffer);
+    function writeStr(offset, str) {
+      for (let i = 0; i < str.length; i++) view.setUint8(offset + i, str.charCodeAt(i));
+    }
+    writeStr(0, 'RIFF'); view.setUint32(4, 36 + totalSamples * 2, true); writeStr(8, 'WAVE');
+    writeStr(12, 'fmt '); view.setUint32(16, 16, true); view.setUint16(20, 1, true);
+    view.setUint16(22, 1, true); view.setUint32(24, sampleRate, true);
+    view.setUint32(28, sampleRate * 2, true); view.setUint16(32, 2, true);
+    view.setUint16(34, 16, true); writeStr(36, 'data'); view.setUint32(40, totalSamples * 2, true);
+    const scale = [261.63, 293.66, 329.63, 392.00, 440.00, 523.25];
+    const beatDur = 60 / bpm;
+    for (let i = 0; i < totalSamples; i++) {
+      const t = i / sampleRate;
+      const beatIdx = Math.floor(t / beatDur);
+      const localT = t % beatDur;
+      const freq = scale[beatIdx % scale.length];
+      const melody = Math.sin(2 * Math.PI * freq * t) * Math.exp(-localT * 4) * 0.45;
+      const kick = (beatIdx % 2 === 0) ? Math.sin(2 * Math.PI * 65 * localT) * Math.exp(-localT * 14) * 0.45 : 0;
+      const sample = Math.max(-1, Math.min(1, melody + kick));
+      view.setInt16(44 + i * 2, sample * 32767, true);
+    }
+    const bytes = new Uint8Array(buffer);
+    let binary = '';
+    for (let i = 0; i < bytes.byteLength; i++) binary += String.fromCharCode(bytes[i]);
+    const base64 = 'data:audio/wav;base64,' + btoa(binary);
+    const fileName = `Patel_${lang}_${style}_Song_${Date.now()}.wav`;
+    const lyrics = document.getElementById('songLyrics').value.trim();
+    if (window.AndroidBridge && window.AndroidBridge.shareAudioAndText) {
+      window.AndroidBridge.shareAudioAndText(base64, fileName, "🎶 Patel AI Voice & Music Studio:\n" + lyrics);
+    }
+  }
+</script>
 </body>
 </html>
