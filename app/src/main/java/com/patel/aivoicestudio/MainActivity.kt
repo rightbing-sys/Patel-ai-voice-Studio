@@ -3,9 +3,11 @@ package com.patel.aivoicestudio
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.ContentValues
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.Typeface
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
@@ -30,6 +32,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import java.io.File
 import java.io.FileOutputStream
 import java.util.Locale
@@ -39,6 +42,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
     private lateinit var webView: WebView
     private var tts: TextToSpeech? = null
     private var ttsReady = false
+    private var lastSavedUri: Uri? = null
 
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -179,6 +183,77 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         fun saveAudio(base64Data: String, fileName: String) {
             saveBase64Audio(base64Data, "audio/mpeg", fileName)
         }
+
+        @JavascriptInterface
+        fun shareText(text: String, targetPackage: String) {
+            runOnUiThread {
+                try {
+                    val sendIntent = Intent(Intent.ACTION_SEND).apply {
+                        type = "text/plain"
+                        putExtra(Intent.EXTRA_TEXT, text)
+                        if (targetPackage.isNotEmpty()) {
+                            setPackage(targetPackage)
+                        }
+                    }
+                    startActivity(Intent.createChooser(sendIntent, "Share via"))
+                } catch (e: Exception) {
+                    val fallback = Intent(Intent.ACTION_SEND).apply {
+                        type = "text/plain"
+                        putExtra(Intent.EXTRA_TEXT, text)
+                    }
+                    startActivity(Intent.createChooser(fallback, "Share via"))
+                }
+            }
+        }
+
+        @JavascriptInterface
+        fun shareAudioAndText(base64Data: String, fileName: String, captionText: String) {
+            saveBase64Audio(base64Data, "audio/wav", fileName)
+            runOnUiThread {
+                try {
+                    val shareIntent = Intent(Intent.ACTION_SEND).apply {
+                        type = "audio/*"
+                        putExtra(Intent.EXTRA_TEXT, captionText)
+                        lastSavedUri?.let {
+                            putExtra(Intent.EXTRA_STREAM, it)
+                            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                        }
+                    }
+                    startActivity(Intent.createChooser(shareIntent, "Share Audio Song"))
+                } catch (e: Exception) {
+                    Toast.makeText(this@MainActivity, "Share error: ${e.message}", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+
+        @JavascriptInterface
+        fun shareAppApk() {
+            runOnUiThread {
+                try {
+                    val sourceApk = File(applicationInfo.sourceDir)
+                    val destApk = File(cacheDir, "Patel_AI_Voice_Studio.apk")
+                    sourceApk.copyTo(destApk, overwrite = true)
+
+                    val apkUri = FileProvider.getUriForFile(
+                        this@MainActivity,
+                        "${packageName}.fileprovider",
+                        destApk
+                    )
+                    val shareIntent = Intent(Intent.ACTION_SEND).apply {
+                        type = "application/vnd.android.package-archive"
+                        putExtra(Intent.EXTRA_STREAM, apkUri)
+                        putExtra(
+                            Intent.EXTRA_TEXT,
+                            "🎙️ Patel AI Voice & Music Studio (Mithila Stream Studio, Birpur) ऐप इंस्टॉल करें और 15 भाषाओं में वॉयस व गाने बनाएं!"
+                        )
+                        addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                    }
+                    startActivity(Intent.createChooser(shareIntent, "Share Patel AI Voice Studio App"))
+                } catch (e: Exception) {
+                    Toast.makeText(this@MainActivity, "App share error: ${e.message}", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
     }
 
     private fun saveBase64Audio(dataUrl: String, mimeType: String, customName: String? = null) {
@@ -194,15 +269,18 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
                     put(MediaStore.Downloads.RELATIVE_PATH, Environment.DIRECTORY_DOWNLOADS)
                 }
                 val uri = contentResolver.insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, values)
+                lastSavedUri = uri
                 uri?.let {
                     contentResolver.openOutputStream(it)?.use { out -> out.write(bytes) }
                 }
             } else {
                 val dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-                FileOutputStream(File(dir, fileName)).use { out -> out.write(bytes) }
+                val file = File(dir, fileName)
+                FileOutputStream(file).use { out -> out.write(bytes) }
+                lastSavedUri = Uri.fromFile(file)
             }
             runOnUiThread {
-                Toast.makeText(this, "Saved to Downloads: $fileName", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "Saved to Downloads: $fileName", Toast.LENGTH_SHORT).show()
             }
         } catch (e: Exception) {
             runOnUiThread {
