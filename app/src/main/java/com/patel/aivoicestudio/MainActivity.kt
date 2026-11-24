@@ -12,6 +12,7 @@ import android.os.Environment
 import android.os.Handler
 import android.os.Looper
 import android.provider.MediaStore
+import android.speech.tts.TextToSpeech
 import android.util.Base64
 import android.view.Gravity
 import android.view.View
@@ -31,17 +32,22 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import java.io.File
 import java.io.FileOutputStream
+import java.util.Locale
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
 
     private lateinit var webView: WebView
+    private var tts: TextToSpeech? = null
+    private var ttsReady = false
 
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        window.statusBarColor = Color.parseColor("#0B1026")
-        window.navigationBarColor = Color.parseColor("#0B1026")
+        window.statusBarColor = Color.parseColor("#101820")
+        window.navigationBarColor = Color.parseColor("#101820")
+
+        tts = TextToSpeech(this, this)
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)
             != PackageManager.PERMISSION_GRANTED
@@ -49,7 +55,12 @@ class MainActivity : AppCompatActivity() {
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.RECORD_AUDIO), 101)
         }
 
-        val rootLayout = FrameLayout(this)
+        val rootLayout = FrameLayout(this).apply {
+            layoutParams = FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.MATCH_PARENT,
+                FrameLayout.LayoutParams.MATCH_PARENT
+            )
+        }
 
         webView = WebView(this).apply {
             settings.javaScriptEnabled = true
@@ -63,7 +74,7 @@ class MainActivity : AppCompatActivity() {
                     request.grant(request.resources)
                 }
             }
-            addJavascriptInterface(AudioDownloadBridge(), "AndroidBridge")
+            addJavascriptInterface(StudioBridge(), "AndroidBridge")
             setDownloadListener { url, _, _, mimeType, _ ->
                 if (url.startsWith("data:")) {
                     saveBase64Audio(url, mimeType ?: "audio/mpeg")
@@ -73,25 +84,35 @@ class MainActivity : AppCompatActivity() {
         }
         rootLayout.addView(webView)
 
-        val splashLayout = LinearLayout(this).apply {
-            orientation = LinearLayout.VERTICAL
-            gravity = Gravity.CENTER
+        val splashLayout = FrameLayout(this).apply {
+            layoutParams = FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.MATCH_PARENT,
+                FrameLayout.LayoutParams.MATCH_PARENT
+            )
             setBackgroundColor(Color.parseColor("#101820"))
-            setPadding(48, 48, 48, 48)
         }
 
         val bannerResId = resources.getIdentifier("mithila_full_banner", "drawable", packageName)
         if (bannerResId != 0) {
             val bannerImg = ImageView(this).apply {
                 setImageResource(bannerResId)
-                scaleType = ImageView.ScaleType.CENTER_CROP
-                layoutParams = LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.MATCH_PARENT,
-                    LinearLayout.LayoutParams.MATCH_PARENT
+                scaleType = ImageView.ScaleType.FIT_XY
+                layoutParams = FrameLayout.LayoutParams(
+                    FrameLayout.LayoutParams.MATCH_PARENT,
+                    FrameLayout.LayoutParams.MATCH_PARENT
                 )
             }
             splashLayout.addView(bannerImg)
         } else {
+            val fallbackBox = LinearLayout(this).apply {
+                orientation = LinearLayout.VERTICAL
+                gravity = Gravity.CENTER
+                setPadding(48, 48, 48, 48)
+                layoutParams = FrameLayout.LayoutParams(
+                    FrameLayout.LayoutParams.MATCH_PARENT,
+                    FrameLayout.LayoutParams.MATCH_PARENT
+                )
+            }
             val titleText = TextView(this).apply {
                 text = "MITHILA STREAM STUDIO\nBIRPUR"
                 textSize = 26f
@@ -105,8 +126,9 @@ class MainActivity : AppCompatActivity() {
                 setTextColor(Color.parseColor("#E0F7FA"))
                 gravity = Gravity.CENTER
             }
-            splashLayout.addView(titleText)
-            splashLayout.addView(subText)
+            fallbackBox.addView(titleText)
+            fallbackBox.addView(subText)
+            splashLayout.addView(fallbackBox)
         }
 
         rootLayout.addView(splashLayout)
@@ -114,10 +136,45 @@ class MainActivity : AppCompatActivity() {
 
         Handler(Looper.getMainLooper()).postDelayed({
             splashLayout.visibility = View.GONE
+            window.statusBarColor = Color.parseColor("#080D1E")
+            window.navigationBarColor = Color.parseColor("#080D1E")
         }, 2500)
     }
 
-    inner class AudioDownloadBridge {
+    override fun onInit(status: Int) {
+        if (status == TextToSpeech.SUCCESS) {
+            val res = tts?.setLanguage(Locale("hi", "IN"))
+            ttsReady = (res != TextToSpeech.LANG_MISSING_DATA && res != TextToSpeech.LANG_NOT_SUPPORTED)
+            if (!ttsReady) {
+                tts?.setLanguage(Locale.US)
+                ttsReady = true
+            }
+        }
+    }
+
+    inner class StudioBridge {
+        @JavascriptInterface
+        fun speakText(text: String, langTag: String, rate: Float, pitch: Float) {
+            runOnUiThread {
+                if (ttsReady && tts != null) {
+                    val locale = Locale.forLanguageTag(langTag)
+                    tts?.language = locale
+                    tts?.setSpeechRate(rate)
+                    tts?.setPitch(pitch)
+                    tts?.speak(text, TextToSpeech.QUEUE_FLUSH, null, "patel_tts")
+                } else {
+                    Toast.makeText(this@MainActivity, "TTS Engine initializing...", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+
+        @JavascriptInterface
+        fun stopSpeak() {
+            runOnUiThread {
+                tts?.stop()
+            }
+        }
+
         @JavascriptInterface
         fun saveAudio(base64Data: String, fileName: String) {
             saveBase64Audio(base64Data, "audio/mpeg", fileName)
@@ -152,6 +209,12 @@ class MainActivity : AppCompatActivity() {
                 Toast.makeText(this, "Save error: ${e.message}", Toast.LENGTH_SHORT).show()
             }
         }
+    }
+
+    override fun onDestroy() {
+        tts?.stop()
+        tts?.shutdown()
+        super.onDestroy()
     }
 
     override fun onBackPressed() {

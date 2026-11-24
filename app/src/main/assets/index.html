@@ -292,7 +292,7 @@
   window.speechSynthesis.onvoiceschanged = loadVoices;
   setTimeout(loadVoices, 500);
 
-  function speakTTS() {
+  function speakTTS() { const t = document.getElementById("ttsText").value.trim(); const l = document.getElementById("ttsLang").value; const r = parseFloat(document.getElementById("ttsRate").value); const p = parseFloat(document.getElementById("ttsPitch").value); if (window.AndroidBridge && window.AndroidBridge.speakText) { window.AndroidBridge.speakText(t, l, r, p); return; }
     stopAll();
     const text = document.getElementById('ttsText').value.trim();
     if (!text) return;
@@ -302,7 +302,7 @@
     utter.lang = document.getElementById('ttsLang').value;
     utter.rate = parseFloat(document.getElementById('ttsRate').value);
     utter.pitch = parseFloat(document.getElementById('ttsPitch').value);
-    window.speechSynthesis.speak(utter);
+    if (window.AndroidBridge && window.AndroidBridge.speakText) { window.AndroidBridge.speakText(lyrics, mapLang[langCode] || "hi-IN", 0.9, 1.05); } else { window.speechSynthesis.speak(utter); }
   }
 
   // Sample Lyrics Bank for 6 Languages
@@ -357,7 +357,7 @@
   let audioCtx = null;
   let musicTimer = null;
 
-  function stopAll() {
+  function stopAll() { if (window.AndroidBridge && window.AndroidBridge.stopSpeak) { window.AndroidBridge.stopSpeak(); }
     window.speechSynthesis.cancel();
     if (musicTimer) {
       clearInterval(musicTimer);
@@ -403,7 +403,7 @@
     const bpm = parseInt(document.getElementById('tempo').value);
     const langCode = document.getElementById('songLang').value;
 
-    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)(); if (audioCtx.state === "suspended") { audioCtx.resume(); }
     const scales = {
       folk: [261.63, 293.66, 329.63, 392.00, 440.00, 523.25], // Bhupali Raga (Folk)
       bollywood: [261.63, 311.13, 349.23, 392.00, 466.16, 523.25], // 70s-90s Melody
@@ -431,7 +431,7 @@
       utter.rate = 0.88;
       utter.pitch = 1.08;
       utter.onend = () => setTimeout(stopAll, 1500);
-      window.speechSynthesis.speak(utter);
+      if (window.AndroidBridge && window.AndroidBridge.speakText) { window.AndroidBridge.speakText(lyrics, mapLang[langCode] || "hi-IN", 0.9, 1.05); } else { window.speechSynthesis.speak(utter); }
     }
     document.getElementById('musicStatus').innerText = "🎶 म्यूज़िक और गायन चल रहा है...";
   }
