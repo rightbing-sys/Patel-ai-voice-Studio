@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Patel AI Voice & Music Studio</title>
+<style>
+  :root {
+    --bg: #080d1e;
+    --card: #101938;
+    --gold: #d7b56d;
+    --accent: #8c32ff;
+    --cyan: #087dff;
+    --text: #f3f6ff;
+    --muted: #9aa7d1;
+  }
+  * { box-sizing: border-box; font-family: system-ui, -apple-system, sans-serif; }
+  body {
+    margin: 0; padding: 14px; background: var(--bg); color: var(--text);
+    padding-bottom: 40px;
+  }
+  .header {
+    display: flex; align-items: center; gap: 12px; margin-bottom: 14px;
+  }
+  .logo-badge {
+    width: 48px; height: 48px; border-radius: 14px;
+    background: linear-gradient(135deg, #8c32ff, #087dff);
+    display: grid; place-items: center; font-size: 24px;
+    box-shadow: 0 0 20px #6b38ff66; flex-shrink: 0;
+  }
+  h1 { font-size: 19px; margin: 0; line-height: 1.2; }
+  .tag { font-size: 11px; color: var(--gold); letter-spacing: 1px; font-weight: 700; }
+  .sub { color: var(--muted); font-size: 12px; margin-top: 2px; }
+
+  .hero {
+    padding: 18px 16px; border: 1px solid #4652a8; border-radius: 22px;
+    background: linear-gradient(135deg, #20266b, #36106b 65%, #063b70);
+    box-shadow: 0 10px 28px #0006; margin-bottom: 16px;
+  }
+  .hero h2 { font-size: 20px; margin: 0 0 6px; color: #fff; }
+  .hero p { font-size: 12.5px; color: #d9ddff; margin: 0; }
+
+  .wave {
+    height: 36px; display: flex; align-items: center; justify-content: center;
+    gap: 4px; margin-top: 12px;
+  }
+  .wave i {
+    width: 4px; border-radius: 9px;
+    background: linear-gradient(#e64cff, #11c5ff);
+    height: var(--h); animation: pulse 1.2s infinite ease-in-out alternate;
+  }
+  @keyframes pulse {
+    0% { transform: scaleY(0.45); opacity: 0.6; }
+    100% { transform: scaleY(1.15); opacity: 1; }
+  }
+
+  .tabs { display: flex; gap: 7px; margin-bottom: 14px; }
+  .tab {
+    flex: 1; border: 1px solid #3b478e; background: #111a45; color: #dce2ff;
+    border-radius: 13px; padding: 11px 6px; font-weight: 700; font-size: 12.5px;
+    text-align: center; cursor: pointer;
+  }
+  .tab.active {
+    background: linear-gradient(110deg, #8c32ff, #087dff);
+    border-color: transparent; color: #fff;
+    box-shadow: 0 4px 14px #6b38ff55;
+  }
+
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  .card {
+    background: var(--card); border: 1px solid #2c3875;
+    border-radius: 20px; padding: 16px; margin-bottom: 14px;
+  }
+  label {
+    display: block; font-size: 12.5px; color: #dce2ff;
+    font-weight: 600; margin: 12px 0 6px;
+  }
+  label:first-child { margin-top: 0; }
+
+  textarea, select, input {
+    width: 100%; border: 1px solid #46539a; border-radius: 13px;
+    background: #080f32; color: #fff; padding: 12px; font-size: 14px;
+    outline: none;
+  }
+  textarea { min-height: 115px; resize: vertical; line-height: 1.5; }
+  .row { display: flex; gap: 10px; }
+  .row > * { flex: 1; min-width: 0; }
+
+  button {
+    cursor: pointer; border: 0; color: #fff; font-weight: 700;
+    border-radius: 14px; padding: 13px; font-size: 14px;
+    transition: transform 0.1s;
+  }
+  button:active { transform: scale(0.98); }
+  .primary {
+    width: 100%; background: linear-gradient(100deg, #9c2cff, #126eff);
+    box-shadow: 0 6px 18px #632cff44; margin-top: 12px;
+  }
+  .green-btn {
+    width: 100%; background: linear-gradient(100deg, #087d70, #08a6a0);
+    margin-top: 10px;
+  }
+  .gold-btn {
+    width: 100%; background: linear-gradient(100deg, #b8892d, #e0b85c);
+    color: #101820; margin-top: 10px;
+  }
+  .secondary {
+    background: #1c2861; border: 1px solid #3f509e; flex: 1;
+  }
+  .btn-row { display: flex; gap: 10px; margin-top: 12px; }
+  .status-box {
+    margin-top: 10px; padding: 10px; border-radius: 12px;
+    background: #0b143d; border: 1px solid #2b3b82;
+    font-size: 12px; color: var(--gold); text-align: center;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo-badge">🎙️</div>
+  <div>
+    <div class="tag">MITHILA STREAM STUDIO • BIRPUR</div>
+    <h1>Patel AI Voice & Music Studio</h1>
+    <div class="sub">Text to Voice • AI Song Maker • 6+ Languages</div>
+  </div>
+</div>
+
+<div class="hero">
+  <h2>अपनी बात और गीत को आवाज़ दें</h2>
+  <p>हिंदी, मैथिली, भोजपुरी, बंगाली, मराठी और अंग्रेज़ी में वॉयस और म्यूज़िक तैयार करें।</p>
+  <div class="wave">
+    <i style="--h:14px"></i><i style="--h:28px"></i><i style="--h:20px"></i>
+    <i style="--h:34px"></i><i style="--h:16px"></i><i style="--h:30px"></i>
+    <i style="--h:22px"></i><i style="--h:35px"></i><i style="--h:18px"></i>
+    <i style="--h:26px"></i><i style="--h:14px"></i>
+  </div>
+</div>
+
+<div class="tabs">
+  <button class="tab active" onclick="switchTab('tts', this)">🗣️ Text to Voice</button>
+  <button class="tab" onclick="switchTab('music', this)">🎵 AI Song & Music</button>
+  <button class="tab" onclick="switchTab('clone', this)">🎤 My Voice</button>
+</div>
+
+<!-- TAB 1: TEXT TO VOICE -->
+<div id="panel-tts" class="panel active">
+  <div class="card">
+    <label for="ttsText">अपना टेक्स्ट लिखें</label>
+    <textarea id="ttsText" placeholder="यहाँ हिंदी, मैथिली, भोजपुरी या किसी भी भाषा में टेक्स्ट लिखें...">नमस्कार, पटेल एआई वॉयस स्टूडियो में आपका स्वागत है।</textarea>
+
+    <div class="row">
+      <div>
+        <label for="ttsLang">भाषा चुनें</label>
+        <select id="ttsLang">
+          <option value="hi-IN">हिंदी (Hindi)</option>
+          <option value="hi-IN">मैथिली (Maithili)</option>
+          <option value="hi-IN">भोजपुरी (Bhojpuri)</option>
+          <option value="bn-IN">बंगाली (Bengali)</option>
+          <option value="mr-IN">मराठी (Marathi)</option>
+          <option value="en-IN">अंग्रेज़ी (English India)</option>
+          <option value="gu-IN">गुजराती</option>
+          <option value="ta-IN">तमिल</option>
+          <option value="te-IN">तेलुगु</option>
+          <option value="pa-IN">पंजाबी</option>
+          <option value="ur-IN">उर्दू</option>
+        </select>
+      </div>
+      <div>
+        <label for="ttsVoice">मोबाइल की आवाज़</label>
+        <select id="ttsVoice"><option>लोड हो रही हैं...</option></select>
+      </div>
+    </div>
+
+    <div class="row">
+      <div>
+        <label>स्पीड (Rate): <span id="rateVal">1.0</span></label>
+        <input type="range" id="ttsRate" min="0.6" max="1.5" step="0.1" value="1.0" oninput="rateVal.innerText=this.value">
+      </div>
+      <div>
+        <label>पिच (Pitch): <span id="pitchVal">1.0</span></label>
+        <input type="range" id="ttsPitch" min="0.6" max="1.5" step="0.1" value="1.0" oninput="pitchVal.innerText=this.value">
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="primary" style="margin-top:0;flex:2" onclick="speakTTS()">▶ आवाज़ सुनें</button>
+      <button class="secondary" onclick="stopAll()">⏹ रोकें</button>
+    </div>
+    <button class="green-btn" onclick="exportVoiceNote()">⬇ Save Voice Audio (Downloads)</button>
+  </div>
+</div>
+
+<!-- TAB 2: AI SONG & MUSIC STUDIO -->
+<div id="panel-music" class="panel">
+  <div class="card">
+    <div class="row">
+      <div>
+        <label for="songLang">गाने की भाषा (6 Languages)</label>
+        <select id="songLang">
+          <option value="hi">हिंदी (Hindi)</option>
+          <option value="mai">मैथिली (Maithili)</option>
+          <option value="bho">भोजपुरी (Bhojpuri)</option>
+          <option value="bn">बंगाली (Bengali)</option>
+          <option value="mr">मराठी (Marathi)</option>
+          <option value="en">अंग्रेज़ी (English)</option>
+        </select>
+      </div>
+      <div>
+        <label for="musicStyle">म्यूज़िक स्टाइल / धुन</label>
+        <select id="musicStyle">
+          <option value="folk">मैथिली / भोजपुरी लोक धुन (Harmonium + Dholak)</option>
+          <option value="bollywood">70s-90s रेट्रो बॉलीवुड मेलोडी</option>
+          <option value="deephouse">इबीज़ा डीप हाउस / पार्टी बीट</option>
+          <option value="lofi">सॉफ्ट लो-फ़ाई / रोमांटिक पियानो</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="row">
+      <div>
+        <label for="songMood">गाने का मूड</label>
+        <select id="songMood">
+          <option value="romantic">रोमांटिक / प्यार भरा</option>
+          <option value="festive">शादी / उत्सव / धमाकेदार</option>
+          <option value="sad">दर्द भरा / इमोशनल</option>
+          <option value="folk">माटी / गाँव / संस्कृति</option>
+        </select>
+      </div>
+      <div>
+        <label for="tempo">टेम्पो (BPM): <span id="bpmVal">105</span></label>
+        <input type="range" id="tempo" min="75" max="135" step="5" value="105" oninput="bpmVal.innerText=this.value">
+      </div>
+    </div>
+
+    <button class="gold-btn" onclick="generateAutoLyrics()">✨ चुनी हुई भाषा में नए बोल (Lyrics) लिखें</button>
+
+    <label for="songLyrics">गाने के बोल (Lyrics)</label>
+    <textarea id="songLyrics" placeholder="यहाँ गाने के बोल लिखें या ऊपर बटन दबाकर तैयार करें..."></textarea>
+
+    <div class="btn-row">
+      <button class="primary" style="margin-top:0;flex:2" onclick="playSongWithMusic()">🎶 म्यूज़िक + गाना चलाएं</button>
+      <button class="secondary" onclick="stopAll()">⏹ रोकें</button>
+    </div>
+
+    <button class="green-btn" onclick="downloadGeneratedMusic()">⬇ Download Music Track (WAV/MP3)</button>
+    <button class="secondary" style="width:100%;margin-top:10px" onclick="copySunoPrompt()">📋 Suno / Udio AI Music Prompt कॉपी करें</button>
+
+    <div id="musicStatus" class="status-box">तैयार है — भाषा और म्यूज़िक स्टाइल चुनकर गाना बनाएं!</div>
+  </div>
+</div>
+
+<!-- TAB 3: MY VOICE RECORDER -->
+<div id="panel-clone" class="panel">
+  <div class="card">
+    <h3 style="margin-top:0;color:var(--gold)">🎤 अपनी आवाज़ रिकॉर्ड करें</h3>
+    <p style="font-size:13px;color:var(--muted)">अपनी आवाज़ में गाना या डायलॉग रिकॉर्ड करें और सीधे फ़ोन में सेव करें।</p>
+    <div class="btn-row">
+      <button class="primary" style="margin-top:0" id="recBtn" onclick="toggleRecording()">🔴 रिकॉर्डिंग शुरू करें</button>
+      <button class="secondary" onclick="playRecorded()">▶ रिकॉर्डिंग सुनें</button>
+    </div>
+    <button class="green-btn" onclick="saveRecordedAudio()">⬇ Save My Recording (Downloads)</button>
+    <div id="recStatus" class="status-box">माइक्रोफ़ोन तैयार है</div>
+  </div>
+</div>
+
+<script>
+  function switchTab(name, btn) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('panel-' + name).classList.add('active');
+  }
+
+  // Load TTS Voices
+  let voices = [];
+  function loadVoices() {
+    voices = window.speechSynthesis.getVoices();
+    const sel = document.getElementById('ttsVoice');
+    if (!voices.length) return;
+    sel.innerHTML = '';
+    voices.forEach((v, i) => {
+      const opt = document.createElement('option');
+      opt.value = i;
+      opt.textContent = v.name + ' (' + v.lang + ')';
+      if (v.lang.includes('hi') || v.lang.includes('IN')) opt.selected = true;
+      sel.appendChild(opt);
+    });
+  }
+  window.speechSynthesis.onvoiceschanged = loadVoices;
+  setTimeout(loadVoices, 500);
+
+  function speakTTS() {
+    stopAll();
+    const text = document.getElementById('ttsText').value.trim();
+    if (!text) return;
+    const utter = new SpeechSynthesisUtterance(text);
+    const vIdx = document.getElementById('ttsVoice').value;
+    if (voices[vIdx]) utter.voice = voices[vIdx];
+    utter.lang = document.getElementById('ttsLang').value;
+    utter.rate = parseFloat(document.getElementById('ttsRate').value);
+    utter.pitch = parseFloat(document.getElementById('ttsPitch').value);
+    window.speechSynthesis.speak(utter);
+  }
+
+  // Sample Lyrics Bank for 6 Languages
+  const lyricsDB = {
+    hi: {
+      romantic: "चाँदनी रातों में तेरा ही ख्याल आता है,\nदिल की हर धड़कन में तेरा ही नाम आता है,\nतेरे बिना अधूरा सा लगता है ये जहाँ,\nतू ही मेरी मंज़िल, तू ही मेरा आसमाँ।",
+      festive: "ढोल नगाड़े बजने लगे हैं आज की रात,\nखुशियों की आई है प्यारी सी बारात,\nनाचो रे गाओ रे मिलके सारे यार,\nप्यार और उमंग से महका है संसार।",
+      sad: "भीगी पलकों पे तेरी यादों का साया है,\nतन्हाई में हर पल तुझको ही पाया है,\nलौट आओ फिर से इन सूनी राहों में,\nदिल ने सिर्फ़ तुझको ही अपना बनाया है।",
+      folk: "मिट्टी की खुशबू और गाँव की वो शाम,\nपीपल की छाँव में मिलता है आराम,\nकोयल की कूक और नदियों की धार,\nअपनी ही माटी से है सच्चा प्यार।"
+    },
+    mai: {
+      romantic: "चनन सन शीतल अहाँक मुस्कान यौ,\nमिथिला के आँगन में बसल अहाँक प्राण यौ,\nनयन में सजल अछि प्रेमक ई गीत,\nअहीं छी हमर जीवनक सच्चा मीत।",
+      festive: "बाजैत अछि ढोल-पिपही मिथिला नगरिया में,\nउमंग भरल अछि आई सबहक डगरिया में,\nगाउ-गाउ सोहर आ मंगल गान हो,\nआनंद सँ झूमि उठल मिथिला महान हो।",
+      sad: "नोर बहैत अछि नयन सँ अहाँक याद में,\nमन बिकल भेल अछि विरहक फरियाद में,\nकहिया आबय छी अहाँ अपन गाम यौ,\nअहीं बिनु सूना लागैत अछि ई ठाम यौ।",
+      folk: "कमला आ कोसी के निर्मल ई धार यौ,\nमिथिला के माटी पर हमर अधिकार यौ,\nपाग आ दोपटा सँ सजैत अछि मान,\nबीरपुर के धरती हमर अभिमान।"
+    },
+    bho: {
+      romantic: "तोर तिरछी नजरिया करेजा में समा गइल,\nपहिलही नजर में तू मनवा के भा गइल,\nचंदा जइसन मुखड़ा पे दिल कुर्बान बा,\nतू ही हमार धड़कन, तू ही हमार जान बा।",
+      festive: "बाजेला ढोलक आ झूमता जहान बा,\nआज के ई रात बड़ा ही शानदार बा,\nलगा के ठुमका तू रंग जमा द,\nखुशी के ई महफ़िल आज सजा द।",
+      sad: "अँखिया से लोर गिरे तोहरे ही याद में,\nजिंदगी गुजरता अब त फरियाद में,\nकइसे भुलाई तोहार मीठी-मीठी बतिया,\nकटत नइखे अब त ई सूनी रतिया।",
+      folk: "गंगा जी के तीरे बहे पुरवइया बयार हो,\nअपना भोजपुरिया माटी से बड़ा प्यार हो,\nचैती आ कजरी के गूंजेला तान,\nगाँव के ई गली बा हमार पहचान।"
+    },
+    bn: {
+      romantic: "আকাশের ওই নীল সীমানায় তোমার ছবি আঁকি,\nমনের গভীর গোপন কোণে তোমায় ভালো রাখি,\nবৃষ্টি ভেজা সন্ধ্যায় বাজে প্রেমেরই সুর,\nতুমি কাছে থাকলে ব্যথা হয়ে যায় দূর।",
+      festive: "ঢাকের তালে তালে আজ মেতেছে সবার মন,\nআনন্দের এই উৎসবে এসো হে আপনজন,\nআলোর রোশনাইয়ে ভরে উঠেছে ধরা,\nখুশির জোয়ারে আজ সবাই দিশেহারা।",
+      sad: "মেঘলা দিনের আকাশে আজ জমেছে অভিমান,\nতোমার স্মৃতি বুকে নিয়ে গাই বিরহের গান,\nফিরে এসো আবার তুমি মনের আঙিনায়,\nতোমার পথ চেয়ে আজও প্রহর গুনে যায়।",
+      folk: "সবুজ শ্যামল বাংলার ওই নদীর কিনারায়,\nভাটিয়ালি সুর ভেসে যায় উদাস হাওয়ায়,\nমাটির টানে মন ছুটে যায় আপন ঠিকানায়,\nসোনার বাংলা আমার প্রাণের গান গায়।"
+    },
+    mr: {
+      romantic: "चांदण्याच्या राती तुझीच आठवण येते,\nहृदयाच्या प्रत्येक ठोक्यात तुझेच नाव घेते,\nतुझ्याविना अधुरा वाटतो हा सारा संसार,\nतूच माझे जीवन अन तूच माझा आधार।",
+      festive: "ढोल ताशांच्या गजरात आज नाचूया सारे,\nआनंदाने उजळून गेले आभाळाचे तारे,\nसण हा उत्साहाचा, प्रेमाचा आणि सुखाचा,\nचला साजरा करूया क्षण हा आनंदाचा।",
+      sad: "डोळ्यांतल्या आसवांना आता आवर घालू कसा,\nतुझ्याविना एकटा मी जगू तरी कसा,\nपरतून ये पुन्हा तू या सुन्या वाटेवर,\nतुझीच वाट पाहतोय मी आजही उंबरठ्यावर।",
+      folk: "सह्याद्रीच्या कुशीत वसला महाराष्ट्र माझा,\nमातीच्या या गंधात आहे अभिमान ताजा,\nअभंग आणि ओव्यांनी दुमदुमते ही धरती,\nमराठी संस्कृतीची सदा उंच राहो कीर्ती।"
+    },
+    en: {
+      romantic: "Underneath the silver stars I hear your gentle voice,\nIn a world of endless noise you are my only choice,\nEvery beat inside my heart is calling out your name,\nSince the day you walked right in my life is not the same.",
+      festive: "Turn the music louder now and feel the rhythm rise,\nDancing through the midnight glow beneath the neon skies,\nRaise your hands and celebrate the magic of tonight,\nEverything is shining in this golden festival light.",
+      sad: "Raindrops falling on the glass remind me of your smile,\nWalking down these empty streets for mile after mile,\nWish that I could turn back time and hold you close again,\nOnly echoes of our love remain inside the rain.",
+      folk: "Walking down the dusty road where morning rivers flow,\nBack into the peaceful hills where golden wildflowers grow,\nEvery song reminds me of the place where I belong,\nSimple life and open skies forever keep me strong."
+    }
+  };
+
+  function generateAutoLyrics() {
+    const lang = document.getElementById('songLang').value;
+    const mood = document.getElementById('songMood').value;
+    document.getElementById('songLyrics').value = lyricsDB[lang][mood];
+    document.getElementById('musicStatus').innerText = "✨ नए बोल तैयार हो गए हैं! अब 'म्यूज़िक + गाना चलाएं' दबाएं।";
+  }
+  generateAutoLyrics();
+
+  // Web Audio Synthesizer Engine
+  let audioCtx = null;
+  let musicTimer = null;
+
+  function stopAll() {
+    window.speechSynthesis.cancel();
+    if (musicTimer) {
+      clearInterval(musicTimer);
+      musicTimer = null;
+    }
+    if (audioCtx) {
+      audioCtx.close().catch(() => {});
+      audioCtx = null;
+    }
+  }
+
+  function playNote(ctx, freq, time, dur, type = 'triangle', gainVal = 0.14) {
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = type;
+    osc.frequency.setValueAtTime(freq, time);
+    gain.gain.setValueAtTime(gainVal, time);
+    gain.gain.exponentialRampToValueAtTime(0.001, time + dur);
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start(time);
+    osc.stop(time + dur);
+  }
+
+  function playDrum(ctx, time, isKick = true) {
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(isKick ? 130 : 280, time);
+    osc.frequency.exponentialRampToValueAtTime(isKick ? 42 : 95, time + 0.14);
+    gain.gain.setValueAtTime(isKick ? 0.35 : 0.18, time);
+    gain.gain.exponentialRampToValueAtTime(0.001, time + 0.16);
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start(time);
+    osc.stop(time + 0.16);
+  }
+
+  function playSongWithMusic() {
+    stopAll();
+    const lyrics = document.getElementById('songLyrics').value.trim();
+    const style = document.getElementById('musicStyle').value;
+    const bpm = parseInt(document.getElementById('tempo').value);
+    const langCode = document.getElementById('songLang').value;
+
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const scales = {
+      folk: [261.63, 293.66, 329.63, 392.00, 440.00, 523.25], // Bhupali Raga (Folk)
+      bollywood: [261.63, 311.13, 349.23, 392.00, 466.16, 523.25], // 70s-90s Melody
+      deephouse: [130.81, 155.56, 174.61, 196.00, 233.08, 261.63], // Deep House Bass
+      lofi: [220.00, 261.63, 329.63, 392.00, 493.88] // Lo-Fi Chords
+    };
+    const notes = scales[style];
+    const stepMs = Math.round((60 / bpm) * 1000);
+    let step = 0;
+
+    musicTimer = setInterval(() => {
+      if (!audioCtx) return;
+      const now = audioCtx.currentTime;
+      const note = notes[step % notes.length];
+      const waveType = style === 'folk' ? 'sawtooth' : (style === 'deephouse' ? 'square' : 'sine');
+      playNote(audioCtx, note, now, 0.38, waveType, style === 'folk' ? 0.08 : 0.13);
+      playDrum(audioCtx, now, step % 2 === 0);
+      step++;
+    }, stepMs);
+
+    if (lyrics) {
+      const utter = new SpeechSynthesisUtterance(lyrics);
+      const mapLang = { hi: 'hi-IN', mai: 'hi-IN', bho: 'hi-IN', bn: 'bn-IN', mr: 'mr-IN', en: 'en-IN' };
+      utter.lang = mapLang[langCode] || 'hi-IN';
+      utter.rate = 0.88;
+      utter.pitch = 1.08;
+      utter.onend = () => setTimeout(stopAll, 1500);
+      window.speechSynthesis.speak(utter);
+    }
+    document.getElementById('musicStatus').innerText = "🎶 म्यूज़िक और गायन चल रहा है...";
+  }
+
+  // Generate & Save Real WAV Audio File to Downloads
+  function downloadGeneratedMusic() {
+    const style = document.getElementById('musicStyle').value;
+    const lang = document.getElementById('songLang').value;
+    const bpm = parseInt(document.getElementById('tempo').value);
+    const sampleRate = 22050;
+    const durationSec = 12;
+    const totalSamples = sampleRate * durationSec;
+    const buffer = new ArrayBuffer(44 + totalSamples * 2);
+    const view = new DataView(buffer);
+
+    function writeStr(offset, str) {
+      for (let i = 0; i < str.length; i++) view.setUint8(offset + i, str.charCodeAt(i));
+    }
+    writeStr(0, 'RIFF');
+    view.setUint32(4, 36 + totalSamples * 2, true);
+    writeStr(8, 'WAVE');
+    writeStr(12, 'fmt ');
+    view.setUint32(16, 16, true);
+    view.setUint16(20, 1, true);
+    view.setUint16(22, 1, true);
+    view.setUint32(24, sampleRate, true);
+    view.setUint32(28, sampleRate * 2, true);
+    view.setUint16(32, 2, true);
+    view.setUint16(34, 16, true);
+    writeStr(36, 'data');
+    view.setUint32(40, totalSamples * 2, true);
+
+    const scale = [261.63, 293.66, 329.63, 392.00, 440.00, 523.25];
+    const beatDur = 60 / bpm;
+    for (let i = 0; i < totalSamples; i++) {
+      const t = i / sampleRate;
+      const beatIdx = Math.floor(t / beatDur);
+      const localT = t % beatDur;
+      const freq = scale[beatIdx % scale.length];
+      const melody = Math.sin(2 * Math.PI * freq * t) * Math.exp(-localT * 4) * 0.45;
+      const kick = (beatIdx % 2 === 0) ? Math.sin(2 * Math.PI * 65 * localT) * Math.exp(-localT * 14) * 0.45 : 0;
+      const sample = Math.max(-1, Math.min(1, melody + kick));
+      view.setInt16(44 + i * 2, sample * 32767, true);
+    }
+
+    const bytes = new Uint8Array(buffer);
+    let binary = '';
+    for (let i = 0; i < bytes.byteLength; i++) binary += String.fromCharCode(bytes[i]);
+    const base64 = 'data:audio/wav;base64,' + btoa(binary);
+    const fileName = `Patel_${lang}_${style}_Song_${Date.now()}.wav`;
+
+    if (window.AndroidBridge && window.AndroidBridge.saveAudio) {
+      window.AndroidBridge.saveAudio(base64, fileName);
+    } else {
+      const a = document.createElement('a');
+      a.href = base64;
+      a.download = fileName;
+      a.click();
+    }
+    document.getElementById('musicStatus').innerText = "✅ गाना सेव हो गया: " + fileName;
+  }
+
+  function copySunoPrompt() {
+    const langName = document.getElementById('songLang').options[document.getElementById('songLang').selectedIndex].text;
+    const styleName = document.getElementById('musicStyle').options[document.getElementById('musicStyle').selectedIndex].text;
+    const lyrics = document.getElementById('songLyrics').value;
+    const promptText = `[Style: ${styleName}, Language: ${langName}, Expressive Vocals, Studio Mastering]\n\nLyrics:\n${lyrics}`;
+    navigator.clipboard.writeText(promptText);
+    document.getElementById('musicStatus').innerText = "📋 Suno / Udio AI Prompt कॉपी हो गया है!";
+  }
+
+  // Voice Recorder
+  let mediaRecorder = null;
+  let recordedChunks = [];
+  let recordedBase64 = null;
+
+  async function toggleRecording() {
+    const btn = document.getElementById('recBtn');
+    if (mediaRecorder && mediaRecorder.state === 'recording') {
+      mediaRecorder.stop();
+      btn.innerText = "🔴 रिकॉर्डिंग शुरू करें";
+      return;
+    }
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      recordedChunks = [];
+      mediaRecorder = new MediaRecorder(stream);
+      mediaRecorder.ondataavailable = e => { if (e.data.size > 0) recordedChunks.push(e.data); };
+      mediaRecorder.onstop = () => {
+        const blob = new Blob(recordedChunks, { type: 'audio/webm' });
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          recordedBase64 = reader.result;
+          document.getElementById('recStatus').innerText = "✅ रिकॉर्डिंग तैयार है! सुनें या सेव करें।";
+        };
+        reader.readAsDataURL(blob);
+      };
+      mediaRecorder.start();
+      btn.innerText = "⏹ रिकॉर्डिंग रोकें";
+      document.getElementById('recStatus').innerText = "🎙️ रिकॉर्डिंग चल रही है... बोलें या गाएं";
+    } catch (err) {
+      document.getElementById('recStatus').innerText = "माइक्रोफ़ोन अनुमति दें: " + err.message;
+    }
+  }
+
+  function playRecorded() {
+    if (!recordedBase64) return;
+    new Audio(recordedBase64).play();
+  }
+
+  function saveRecordedAudio() {
+    if (!recordedBase64) {
+      document.getElementById('recStatus').innerText = "पहले आवाज़ रिकॉर्ड करें!";
+      return;
+    }
+    const fileName = `Patel_MyVoice_${Date.now()}.webm`;
+    if (window.AndroidBridge && window.AndroidBridge.saveAudio) {
+      window.AndroidBridge.saveAudio(recordedBase64, fileName);
+    }
+  }
+
+  function exportVoiceNote() {
+    downloadGeneratedMusic();
+  }
+</script>
+</body>
+</html>
