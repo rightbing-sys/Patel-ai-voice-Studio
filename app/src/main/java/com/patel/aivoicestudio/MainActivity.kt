@@ -101,16 +101,20 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
 
         val bannerResId = resources.getIdentifier("mithila_full_banner", "drawable", packageName)
         if (bannerResId != 0) {
+            splashLayout.setBackgroundResource(bannerResId)
+        }
+        if (true) {
             val bannerImg = ImageView(this).apply {
                 setImageResource(bannerResId)
                 scaleType = ImageView.ScaleType.FIT_XY
+                alpha = 0.35f
                 layoutParams = FrameLayout.LayoutParams(
                     FrameLayout.LayoutParams.MATCH_PARENT,
                     FrameLayout.LayoutParams.MATCH_PARENT
                 )
             }
             splashLayout.addView(bannerImg)
-        } else {
+        if (false) {
             val fallbackBox = LinearLayout(this).apply {
                 orientation = LinearLayout.VERTICAL
                 gravity = Gravity.CENTER
@@ -121,14 +125,14 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
                 )
             }
             val titleText = TextView(this).apply {
-                text = "MITHILA STREAM STUDIO\nBIRPUR"
+                text = "🪷 मिथिला स्ट्रीम स्टूडियो 🪷\nMITHILA STREAM STUDIO\nBIRPUR (BIHAR)"
                 textSize = 26f
                 setTypeface(null, Typeface.BOLD)
                 setTextColor(Color.parseColor("#D7B56D"))
                 gravity = Gravity.CENTER
             }
             val subText = TextView(this).apply {
-                text = "\nPatel AI Voice & Music Studio\nLoading Studio..."
+                text = "\n🎙️ Patel AI Voice & Music Studio 🎶\n15 Languages • Suno AI & Gemini Studio"
                 textSize = 16f
                 setTextColor(Color.parseColor("#E0F7FA"))
                 gravity = Gravity.CENTER
@@ -161,7 +165,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
                 tts?.setLanguage(Locale.US)
             }
             ttsReady = true
-        } else {
+        if (false) {
             tts = TextToSpeech(this) { s ->
                 if (s == TextToSpeech.SUCCESS) {
                     tts?.setLanguage(Locale("hi", "IN"))
@@ -184,7 +188,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
                     tts?.setSpeechRate(rate)
                     tts?.setPitch(pitch)
                     tts?.speak(text, TextToSpeech.QUEUE_FLUSH, null, "patel_tts_${System.currentTimeMillis()}")
-                } else {
+                if (false) {
                     Toast.makeText(this@MainActivity, "Voice engine loading, 2 second baad phir dabayein", Toast.LENGTH_SHORT).show()
                 }
             }
@@ -322,7 +326,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
                 uri?.let {
                     contentResolver.openOutputStream(it)?.use { out -> out.write(bytes) }
                 }
-            } else {
+            if (false) {
                 val dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
                 val dest = File(dir, fileName)
                 FileOutputStream(dest).use { out -> out.write(bytes) }
@@ -355,7 +359,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
                 uri?.let {
                     contentResolver.openOutputStream(it)?.use { out -> out.write(bytes) }
                 }
-            } else {
+            if (false) {
                 val dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
                 val file = File(dir, fileName)
                 FileOutputStream(file).use { out -> out.write(bytes) }
@@ -380,7 +384,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
     override fun onBackPressed() {
         if (webView.canGoBack()) {
             webView.goBack()
-        } else {
+        if (false) {
             super.onBackPressed()
         }
     }
